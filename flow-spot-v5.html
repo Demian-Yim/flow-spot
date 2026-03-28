@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FLOW SPOT v5 - 기업교육 스팟 게임</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Background layers */
+      --bg: #F8FAFC;
+      --bg-warm: #FFF8F2;
+      --bg-cool: #F0F4FF;
+
+      /* Primary: Soft Blue */
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --primary-light: #93BBFD;
+      --primary-bg: #EFF6FF;
+
+      /* Accent: Soft Coral/Peach */
+      --accent: #FB923C;
+      --accent-light: #FDBA74;
+      --accent-bg: #FFF7ED;
+      --accent-pastel: #FED7AA;
+
+      /* Warm: Soft Yellow */
+      --warm: #FBBF24;
+      --warm-light: #FDE68A;
+      --warm-bg: #FFFBEB;
+
+      /* Success */
+      --success: #34D399;
+      --success-bg: #ECFDF5;
+
+      /* Text hierarchy */
+      --text: #0F172A;
+      --text-sub: #475569;
+      --text-muted: #94A3B8;
+      --text-light: #CBD5E1;
+
+      /* Borders */
+      --border: #E2E8F0;
+      --border-light: #F1F5F9;
+
+      /* Radius */
+      --r-xl: 24px;
+      --r-lg: 20px;
+      --r-md: 16px;
+      --r-sm: 12px;
+      --r-xs: 8px;
+      --r-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 3px rgba(15,23,42,0.04), 0 1px 2px rgba(15,23,42,0.06);
+      --shadow: 0 4px 16px rgba(15,23,42,0.06), 0 1px 3px rgba(15,23,42,0.04);
+      --shadow-lg: 0 10px 40px rgba(15,23,42,0.08), 0 4px 12px rgba(15,23,42,0.04);
+      --shadow-glow: 0 0 20px rgba(59,130,246,0.15);
+
+      --transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+      --font: 'Noto Sans KR', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .screen {
+      display: none !important;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .screen.active {
+      display: block !important;
+    }
+
+    /* ===== PARTICIPANT VIEW ===== */
+
+    /* Landing Screen */
+    #s-landing {
+      background: linear-gradient(160deg, #1E293B 0%, #1E3A5F 40%, #172554 100%);
+      min-height: 100vh;
+      color: white;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #s-landing.active {
+      display: flex !important;
+    }
+
+    .landing-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #60A5FA, #FB923C);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+
+    .landing-subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 40px;
+      font-size: 1rem;
+    }
+
+    .landing-form {
+      max-width: 380px;
+      width: 100%;
+    }
+
+    #input-code {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: 4px;
+      font-weight: 700;
+      backdrop-filter: blur(10px);
+      outline: none;
+      text-transform: uppercase;
+      font-family: var(--font);
+      transition: var(--transition);
+    }
+
+    #input-code::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    #input-code:focus {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .landing-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 16px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .landing-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .landing-hint {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.85rem;
+      margin-top: 12px;
+    }
+
+    /* Self-Intro Screen */
+    #s-intro {
+      background: var(--bg);
+      padding: 20px;
+      padding-bottom: 80px;
+    }
+
+    .intro-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .intro-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .intro-title {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .intro-subtitle {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+    }
+
+    .intro-section {
+      margin-bottom: 36px;
+    }
+
+    .intro-section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .kw-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .sel-item {
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: var(--transition);
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 8px;
+      font-family: var(--font);
+    }
+
+    .sel-item:hover {
+      border-color: var(--primary-light);
+      background: var(--primary-bg);
+    }
+
+    .sel-item.selected {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      transform: scale(1.03);
+    }
+
+    .sel-char {
+      font-size: 2.2rem;
+      aspect-ratio: 1;
+      min-height: 70px;
+    }
+
+    .sel-food {
+      padding: 16px 8px;
+    }
+
+    .sel-emoji {
+      font-size: 1.8rem;
+      display: block;
+    }
+
+    .sel-name {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .sel-pill {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-full);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      background: white;
+      color: var(--text-sub);
+      font-family: var(--font);
+      font-weight: 600;
+    }
+
+    .sel-pill:hover {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+    }
+
+    .sel-pill.selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .bio-preview {
+      background: linear-gradient(135deg, #EFF6FF 0%, #FFF7ED 100%);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      margin: 24px 0;
+      border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .bio-preview-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bio-preview-content {
+      font-size: 1.1rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .intro-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      flex: 1;
+      min-width: 200px;
+      padding: 14px 20px;
+      border: none;
+      border-radius: var(--r-md);
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      min-width: 200px;
+      padding: 14px 20px;
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      background: white;
+      color: var(--text-sub);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+    }
+
+    /* Home Screen */
+    #s-home {
+      background: var(--bg);
+      padding: 20px;
+      padding-bottom: 80px;
+    }
+
+    .home-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .user-card {
+      background: white;
+      border-radius: var(--r-lg);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .user-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .user-avatar {
+      font-size: 3rem;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-bg);
+      border-radius: var(--r-lg);
+      border: 2px solid var(--primary-light);
+    }
+
+    .user-info h2 {
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .user-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .session-info {
+      background: var(--primary-bg);
+      border-radius: var(--r-md);
+      padding: 16px;
+      margin-top: 16px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .session-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .session-info-label {
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .session-info-value {
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0;
+      z-index: 1000;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      background: white;
+      border: none;
+      font-family: var(--font);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--primary);
+      background: var(--primary-bg);
+    }
+
+    .nav-icon {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    /* Activity Screen */
+    #s-activity {
+      background: var(--bg);
+      padding: 20px;
+      padding-bottom: 80px;
+    }
+
+    .activity-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .activity-header {
+      margin-bottom: 24px;
+    }
+
+    .activity-header h1 {
+      font-size: 1.8rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    #activity-content {
+      min-height: 200px;
+    }
+
+    /* Cafe Screen */
+    #s-cafe {
+      background: var(--bg);
+      padding: 20px;
+      padding-bottom: 80px;
+    }
+
+    #cafe-menu-container {
+      margin-bottom: 20px;
+    }
+
+    #cafe-cart {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 400px;
+      width: calc(100% - 40px);
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+      padding: 16px;
+      display: none;
+      z-index: 500;
+    }
+
+    /* Admin Login */
+    #s-admin-login {
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #1E293B 0%, #1E3A5F 40%, #172554 100%);
+      padding: 20px;
+    }
+
+    #s-admin-login.active {
+      display: flex !important;
+    }
+
+    .admin-login-card {
+      max-width: 400px;
+      width: 100%;
+      padding: 32px;
+      background: white;
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .admin-login-title {
+      font-size: 1.5rem;
+      color: var(--text);
+      margin-bottom: 24px;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Admin Dashboard */
+    #s-admin-dashboard {
+      background: var(--bg);
+      padding: 20px;
+      padding-bottom: 100px;
+    }
+
+    .admin-header {
+      background: white;
+      border-radius: var(--r-lg);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .admin-header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .admin-code {
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      background: var(--primary-bg);
+      padding: 8px 16px;
+      border-radius: var(--r-sm);
+    }
+
+    .admin-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-admin {
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--r-sm);
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.85rem;
+      transition: var(--transition);
+    }
+
+    .btn-admin:hover {
+      background: var(--primary-dark);
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+      background: white;
+      border-radius: var(--r-lg) var(--r-lg) 0 0;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .admin-tab {
+      flex: 1;
+      padding: 16px 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.95rem;
+      transition: var(--transition);
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+
+    .admin-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .admin-tab:hover {
+      color: var(--primary);
+    }
+
+    .admin-tab-content {
+      display: none;
+    }
+
+    .admin-tab-content.active {
+      display: block;
+    }
+
+    /* Module Cards */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .module-card {
+      background: white;
+      border-radius: var(--r-lg);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .module-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .module-card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .module-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .module-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .module-card-btn {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: var(--r-sm);
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: var(--transition);
+    }
+
+    .module-card-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Participants Grid */
+    .participants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .participant-card {
+      background: white;
+      border-radius: var(--r-md);
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+
+    .participant-avatar {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .participant-name {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+
+    .participant-code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--border-light);
+      padding: 4px 8px;
+      border-radius: var(--r-xs);
+    }
+
+    /* Projector View */
+    #s-projector {
+      background: linear-gradient(160deg, #0F172A 0%, #1E293B 40%, #2D3E5F 100%);
+      min-height: 100vh;
+      color: white;
+      padding: 40px;
+    }
+
+    .projector-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .proj-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--r-lg);
+      padding: 40px;
+      margin-bottom: 40px;
+      backdrop-filter: blur(10px);
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .proj-panel h1 {
+      font-size: 3.5rem;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .proj-panel h2 {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 24px;
+    }
+
+    .proj-content {
+      width: 100%;
+    }
+
+    .proj-waiting {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .proj-waiting-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .proj-participant-count {
+      margin-top: 16px;
+      opacity: 0.8;
+      font-size: 1.1rem;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--text);
+      color: white;
+      padding: 16px 24px;
+      border-radius: var(--r-md);
+      box-shadow: var(--shadow-lg);
+      animation: slideIn 0.3s ease-out;
+      z-index: 10000;
+      max-width: 400px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Footer */
+    footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      background: white;
+      margin-top: 40px;
+    }
+
+    footer-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    footer-tagline {
+      font-size: 0.7rem;
+      color: var(--primary);
+      font-style: italic;
+      margin: 2px 0;
+    }
+
+    footer-links {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    footer-links a {
+      color: var(--primary);
+      text-decoration: none;
+      margin: 0 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .char-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .food-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .landing-title {
+        font-size: 2.5rem;
+      }
+
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .admin-tabs {
+        flex-wrap: wrap;
+      }
+
+      .module-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .proj-panel {
+        padding: 24px;
+        min-height: 200px;
+      }
+
+      .proj-panel h1 {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .char-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .food-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .kw-grid {
+        gap: 6px;
+      }
+
+      .sel-pill {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+      }
+
+      .landing-title {
+        font-size: 2rem;
+      }
+
+      .intro-actions {
+        flex-direction: column;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- PARTICIPANT SCREENS -->
+
+  <!-- Landing Screen -->
+  <div id="s-landing" class="screen active">
+    <div class="landing-title">FLOW SPOT</div>
+    <div class="landing-subtitle">기업교육 스팟 게임 통합앱</div>
+    <div class="landing-form">
+      <input type="text" id="input-code" placeholder="세션 코드 입력 (6자)" maxlength="6">
+      <button class="landing-btn" onclick="joinSession()">입장하기</button>
+      <div class="landing-hint">강사님께 코드를 받으세요</div>
+    </div>
+    <div style="margin-top: 32px;">
+      <button onclick="go('s-admin-login')" style="background:none;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.6);padding:10px 24px;border-radius:50px;font-size:0.85rem;cursor:pointer;letter-spacing:0.05em;">🔐 강사 입장</button>
+    </div>
+  </div>
+
+  <!-- Self-Intro Screen -->
+  <div id="s-intro" class="screen">
+    <div class="intro-container">
+      <div class="intro-header">
+        <h1 class="intro-title">자기소개</h1>
+        <p class="intro-subtitle">당신을 표현하는 캐릭터, 음식, 키워드를 선택해주세요</p>
+      </div>
+
+      <div class="intro-section">
+        <h2 class="intro-section-title">🦊 캐릭터 선택</h2>
+        <div class="char-grid" id="char-grid"></div>
+      </div>
+
+      <div class="intro-section">
+        <h2 class="intro-section-title">🍕 음식 선택 (최대 3개)</h2>
+        <div class="food-grid" id="food-grid"></div>
+      </div>
+
+      <div class="intro-section">
+        <h2 class="intro-section-title">🏷️ 키워드 선택 (최대 5개)</h2>
+        <div class="kw-grid" id="kw-grid"></div>
+      </div>
+
+      <div class="bio-preview">
+        <div class="bio-preview-title">미리보기</div>
+        <div class="bio-preview-content" id="bio-preview">캐릭터, 음식, 키워드를 선택해주세요</div>
+      </div>
+
+      <div class="intro-actions">
+        <button class="btn-secondary" onclick="go('s-landing')">← 돌아가기</button>
+        <button class="btn-primary" id="complete-intro-btn" onclick="completeIntro()" disabled>프로필 완성하기 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Home Screen -->
+  <div id="s-home" class="screen">
+    <div class="home-container">
+      <div class="user-card">
+        <div class="user-card-header">
+          <div class="user-avatar" id="home-avatar">🦊</div>
+          <div class="user-info">
+            <h2 id="home-name">Loading...</h2>
+            <p id="home-code">CODE: ------</p>
+          </div>
+        </div>
+        <div class="session-info">
+          <div class="session-info-row">
+            <span class="session-info-label">세션 상태</span>
+            <span class="session-info-value" id="session-status">○ 대기 중</span>
+          </div>
+          <div class="session-info-row">
+            <span class="session-info-label">현재 인원</span>
+            <span class="session-info-value" id="session-count">0명</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Screen -->
+  <div id="s-activity" class="screen">
+    <div class="activity-container">
+      <div class="activity-header">
+        <h1>⚡ 활동</h1>
+      </div>
+      <div id="activity-content"></div>
+    </div>
+  </div>
+
+  <!-- Cafe Screen -->
+  <div id="s-cafe" class="screen">
+    <div style="max-width:900px; margin:0 auto; padding:20px 20px 100px;">
+      <div style="text-align:center; margin-bottom:24px;">
+        <h1 style="font-size:1.8rem; font-weight:900; margin-bottom:8px;">🍽️ 식사/음료 신청</h1>
+        <p style="color:#94a3b8;">원하는 메뉴를 선택하고 주문하세요</p>
+      </div>
+      <div id="cafe-menu-container"></div>
+      <div id="cafe-cart"></div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav" id="bottom-nav" style="display: none;">
+    <button class="nav-item active" onclick="goNav('s-home')"><span class="nav-icon">🏠</span>홈</button>
+    <button class="nav-item" onclick="goNav('s-activity')"><span class="nav-icon">⚡</span>활동</button>
+    <button class="nav-item" onclick="goNav('s-cafe'); renderCafeMenu();"><span class="nav-icon">🍽️</span>식사</button>
+    <button class="nav-item" onclick="goNav('profile')"><span class="nav-icon">👤</span>프로필</button>
+  </div>
+
+  <!-- ADMIN SCREENS -->
+
+  <!-- Admin Login -->
+  <div id="s-admin-login" class="screen">
+    <div class="admin-login-card">
+      <h1 class="admin-login-title">🔐 강사 로그인</h1>
+      <div class="form-group">
+        <input type="password" id="admin-pw" placeholder="비밀번호" onkeypress="if(event.key==='Enter') adminLogin()">
+      </div>
+      <button class="btn-primary" style="width: 100%;" onclick="adminLogin()">로그인</button>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="s-admin-dashboard" class="screen">
+    <div class="admin-header">
+      <div class="admin-header-left">
+        <div class="admin-code" id="admin-session-code">CODE: ------</div>
+        <div class="admin-status">
+          <span class="status-dot"></span>
+          <span id="admin-participant-count">● LIVE 0명</span>
+        </div>
+      </div>
+      <div class="admin-actions">
+        <button class="btn-admin" onclick="openProjector()">🎬 프로젝터</button>
+        <button class="btn-admin" onclick="toggleScoreboard()">📊 스코어보드</button>
+        <button class="btn-admin" onclick="adminLogout()">로그아웃</button>
+      </div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('modules')">스팟</button>
+      <button class="admin-tab" onclick="switchAdminTab('engage')">참여</button>
+      <button class="admin-tab" onclick="switchAdminTab('food')">식사</button>
+      <button class="admin-tab" onclick="switchAdminTab('participants')">참가자</button>
+      <button class="admin-tab" onclick="switchAdminTab('backend')">백엔드</button>
+    </div>
+
+    <div id="admin-modules" class="admin-tab-content active">
+      <div class="module-grid" id="modules-grid"></div>
+    </div>
+
+    <div id="admin-engage" class="admin-tab-content">
+      <div class="module-grid" id="engage-grid"></div>
+    </div>
+
+    <div id="admin-food" class="admin-tab-content">
+      <div style="background:white; border-radius:16px; padding:24px; box-shadow:0 4px 16px rgba(15,23,42,.06);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3 style="font-weight:900;">🍽️ 주문 현황</h3>
+          <span id="order-total" style="background:#3b82f6; color:white; padding:4px 12px; border-radius:20px; font-size:0.85rem; font-weight:700;">0건</span>
+        </div>
+        <div id="food-orders-list" style="max-height:600px; overflow-y:auto;">
+          <div style="color:#94a3b8; text-align:center; padding:40px;">아직 주문이 없습니다</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="admin-participants" class="admin-tab-content">
+      <div class="participants-grid" id="participants-grid"></div>
+    </div>
+
+    <div id="admin-backend" class="admin-tab-content">
+      <!-- Stats Row -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:24px;">
+        <div style="background:white; border-radius:16px; padding:20px; box-shadow:0 4px 16px rgba(15,23,42,.06); text-align:center;">
+          <div style="font-size:0.8rem; color:#94a3b8; font-weight:700; margin-bottom:8px;">참가자</div>
+          <div id="stat-participants" style="font-size:2rem; font-weight:900; color:#3b82f6;">0명</div>
+        </div>
+        <div style="background:white; border-radius:16px; padding:20px; box-shadow:0 4px 16px rgba(15,23,42,.06); text-align:center;">
+          <div style="font-size:0.8rem; color:#94a3b8; font-weight:700; margin-bottom:8px;">경과 시간</div>
+          <div id="session-elapsed" style="font-size:2rem; font-weight:900; color:#3b82f6;">0분 0초</div>
+        </div>
+        <div style="background:white; border-radius:16px; padding:20px; box-shadow:0 4px 16px rgba(15,23,42,.06); text-align:center;">
+          <div style="font-size:0.8rem; color:#94a3b8; font-weight:700; margin-bottom:8px;">세션 코드</div>
+          <div id="stat-code" style="font-size:1.5rem; font-weight:900; color:#fb923c; font-family:monospace;">------</div>
+        </div>
+      </div>
+
+      <!-- Team Scores -->
+      <div style="background:white; border-radius:16px; padding:24px; box-shadow:0 4px 16px rgba(15,23,42,.06); margin-bottom:24px;">
+        <h3 style="font-size:1.1rem; font-weight:900; margin-bottom:20px;">🏆 팀 점수 관리</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px;">
+          <!-- Team A -->
+          <div style="border:2px solid #eff6ff; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-weight:900; color:#1e40af; margin-bottom:8px; font-size:1.1rem;">🔵 팀 A</div>
+            <div id="score-A" style="font-size:2.5rem; font-weight:900; color:#3b82f6; margin-bottom:12px;">0점</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+              <button onclick="addScore('A',10)" style="padding:6px 10px; background:#eff6ff; color:#3b82f6; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+10</button>
+              <button onclick="addScore('A',20)" style="padding:6px 10px; background:#dbeafe; color:#2563eb; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+20</button>
+              <button onclick="addScore('A',50)" style="padding:6px 10px; background:#3b82f6; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+50</button>
+              <button onclick="addScore('A',100)" style="padding:6px 10px; background:#1d4ed8; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+100</button>
+            </div>
+          </div>
+          <!-- Team B -->
+          <div style="border:2px solid #fff7ed; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-weight:900; color:#9a3412; margin-bottom:8px; font-size:1.1rem;">🟠 팀 B</div>
+            <div id="score-B" style="font-size:2.5rem; font-weight:900; color:#fb923c; margin-bottom:12px;">0점</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+              <button onclick="addScore('B',10)" style="padding:6px 10px; background:#fff7ed; color:#fb923c; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+10</button>
+              <button onclick="addScore('B',20)" style="padding:6px 10px; background:#fed7aa; color:#ea580c; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+20</button>
+              <button onclick="addScore('B',50)" style="padding:6px 10px; background:#fb923c; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+50</button>
+              <button onclick="addScore('B',100)" style="padding:6px 10px; background:#c2410c; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+100</button>
+            </div>
+          </div>
+          <!-- Team C -->
+          <div style="border:2px solid #f0fdf4; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-weight:900; color:#14532d; margin-bottom:8px; font-size:1.1rem;">🟢 팀 C</div>
+            <div id="score-C" style="font-size:2.5rem; font-weight:900; color:#34d399; margin-bottom:12px;">0점</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+              <button onclick="addScore('C',10)" style="padding:6px 10px; background:#f0fdf4; color:#34d399; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+10</button>
+              <button onclick="addScore('C',20)" style="padding:6px 10px; background:#bbf7d0; color:#16a34a; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+20</button>
+              <button onclick="addScore('C',50)" style="padding:6px 10px; background:#34d399; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+50</button>
+              <button onclick="addScore('C',100)" style="padding:6px 10px; background:#15803d; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+100</button>
+            </div>
+          </div>
+          <!-- Team D -->
+          <div style="border:2px solid #fdf4ff; border-radius:12px; padding:16px; text-align:center;">
+            <div style="font-weight:900; color:#581c87; margin-bottom:8px; font-size:1.1rem;">🟣 팀 D</div>
+            <div id="score-D" style="font-size:2.5rem; font-weight:900; color:#a855f7; margin-bottom:12px;">0점</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+              <button onclick="addScore('D',10)" style="padding:6px 10px; background:#fdf4ff; color:#a855f7; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+10</button>
+              <button onclick="addScore('D',20)" style="padding:6px 10px; background:#e9d5ff; color:#9333ea; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+20</button>
+              <button onclick="addScore('D',50)" style="padding:6px 10px; background:#a855f7; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+50</button>
+              <button onclick="addScore('D',100)" style="padding:6px 10px; background:#7e22ce; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.8rem;">+100</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Log + Controls -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div style="background:white; border-radius:16px; padding:24px; box-shadow:0 4px 16px rgba(15,23,42,.06);">
+          <h3 style="font-size:1.1rem; font-weight:900; margin-bottom:16px;">📋 활동 로그</h3>
+          <div id="activity-log" style="max-height:300px; overflow-y:auto;">
+            <div style="color:#94a3b8; text-align:center; padding:20px;">아직 이벤트 없음</div>
+          </div>
+        </div>
+        <div style="background:white; border-radius:16px; padding:24px; box-shadow:0 4px 16px rgba(15,23,42,.06);">
+          <h3 style="font-size:1.1rem; font-weight:900; margin-bottom:16px;">📣 세션 제어</h3>
+          <div style="margin-bottom:16px;">
+            <label style="display:block; font-weight:700; margin-bottom:8px; font-size:0.9rem;">전체 공지 발송</label>
+            <input id="announce-input" type="text" placeholder="공지 내용 입력..." style="width:100%; padding:10px 12px; border:2px solid #e2e8f0; border-radius:10px; font-size:0.9rem; margin-bottom:8px; font-family:inherit;">
+            <button onclick="sendAnnouncement()" style="width:100%; padding:10px; background:#3b82f6; color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">📣 공지 발송</button>
+          </div>
+          <div style="border-top:1px solid #f1f5f9; padding-top:16px; display:flex; flex-direction:column; gap:8px;">
+            <button onclick="resetSession()" style="padding:10px; background:#fef2f2; color:#dc2626; border:2px solid #fecaca; border-radius:10px; font-weight:700; cursor:pointer;">🔄 세션 초기화</button>
+            <button onclick="if(confirm('프로젝터 화면을 새로고침합니까?')) bcSend('PROJECTOR_REFRESH',{})" style="padding:10px; background:#f0fdf4; color:#16a34a; border:2px solid #bbf7d0; border-radius:10px; font-weight:700; cursor:pointer;">🖥️ 프로젝터 새로고침</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PROJECTOR SCREEN -->
+
+  <div id="s-projector" class="screen">
+    <div class="projector-container">
+      <div class="proj-panel">
+        <div class="proj-content">
+          <h1 id="projector-title">FLOW SPOT</h1>
+          <p id="projector-subtitle" style="text-align: center; font-size: 1.5rem; margin-top: 20px; color: rgba(255, 255, 255, 0.7);">기업교육 스팟 게임</p>
+        </div>
+      </div>
+      <div id="projector-content"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer id="footer" style="display: none;">
+    <div style="font-size: 0.75rem; font-weight: 700; color: var(--text); margin-bottom: 4px;">AI 코디네이터 임정훈 소장 · <span style="color: var(--text-muted);">FLOW ≋ AX디자인연구소</span></div>
+    <div style="font-size: 0.7rem; color: var(--primary); font-style: italic; margin: 2px 0;">"사람과 일의 흐름을 디자인합니다"</div>
+    <div style="font-size: 0.65rem; color: var(--text-muted);">
+      <a href="https://flowdesign.ai.kr" target="_blank" style="color: var(--primary); text-decoration: none;">flowdesign.ai.kr</a> · COPYRIGHT © FLOW: AX디자인연구소
+    </div>
+  </footer>
+
+  <script>
+    // ===== MODE DETECTION =====
+    const MODE = new URLSearchParams(location.search).get('mode') || 'participant';
+
+    // ===== DATA ARRAYS =====
+    const ANIMALS = [
+      '🦊', '🐻', '🐱', '🐶', '🦁', '🐰', '🐼', '🦄', '🐧', '🐨',
+      '🦋', '🐸', '🦉', '🐙', '🐬', '🦜', '🐝', '🦩', '🐺', '🐹',
+      '🦈', '🐳', '🦎', '🐞', '🐢', '🦓', '🦒', '🦘', '🐿️', '🦔',
+      '🦫', '🦭', '🐏', '🦙', '🦚', '🦃', '🐓', '🦅', '🐉', '🌸',
+      '🍀', '🌊', '⭐', '🔥'
+    ];
+
+    const FOODS = [
+      { e: '🍕', n: '피자' }, { e: '🍜', n: '라면' }, { e: '🍱', n: '도시락' }, { e: '🍣', n: '초밥' },
+      { e: '🍔', n: '버거' }, { e: '🌮', n: '타코' }, { e: '🍝', n: '파스타' }, { e: '🍛', n: '카레' },
+      { e: '🥗', n: '샐러드' }, { e: '🍗', n: '치킨' }, { e: '🥩', n: '스테이크' }, { e: '🍲', n: '찌개' },
+      { e: '🥘', n: '볶음밥' }, { e: '🍞', n: '샌드위치' }, { e: '🍙', n: '주먹밥' }, { e: '🍤', n: '새우튀김' },
+      { e: '🥟', n: '만두' }, { e: '🍢', n: '오뎅' }, { e: '🍖', n: '갈비' }, { e: '🌯', n: '케밥' },
+      { e: '🧁', n: '컵케이크' }, { e: '🍰', n: '케이크' }, { e: '🍩', n: '도넛' }, { e: '🍪', n: '쿠키' },
+      { e: '🍫', n: '초콜릿' }, { e: '🍦', n: '아이스크림' }, { e: '🍓', n: '딸기' }, { e: '🥭', n: '망고' },
+      { e: '🍉', n: '수박' }, { e: '🧀', n: '치즈' }, { e: '🍑', n: '복숭아' }, { e: '🫐', n: '블루베리' }
+    ];
+
+    const KEYWORDS = [
+      '도전', '열정', '소통', '배움', '성장', '협력', '창의', '혁신', '변화', '리더십',
+      '팔로워십', '진정성', '공감', '경청', '존중', '신뢰', '책임', '유머', '긍정', '분석',
+      '실행', '전략', '기획', '디자인', '코딩', '발표', '글쓰기', 'AI', '운동', '달리기',
+      '요가', '명상', '독서', '여행', '음악', '그림', '요리', '사진', '커피', '반려동물',
+      '게임', '영화', '드라마', 'K-POP', '스포츠', '봉사', '가족', '친구', '아날로그', '웰빙'
+    ];
+
+    const MODULES = [
+      { emoji: '😊', name: '매너모드', desc: '긍정 에너지 활성화' },
+      { emoji: '👤', name: '자기소개', desc: '서로 알아가기' },
+      { emoji: '👥', name: '팀매칭', desc: '팀 구성하기' },
+      { emoji: '📋', name: '그라운드룰', desc: '규칙 정하기' },
+      { emoji: '🧘', name: '스트레칭', desc: '신체활동' },
+      { emoji: '🎮', name: '미니게임', desc: '재미있는 경쟁' }
+    ];
+
+    const ENGAGEMENTS = [
+      { emoji: '☁️', name: '워드클라우드', desc: '핵심 단어 수집' },
+      { emoji: '📝', name: '포스트잇', desc: '의견 공유' },
+      { emoji: '⚖️', name: '밸런스게임', desc: 'A vs B 투표' },
+      { emoji: '🗳️', name: '투표', desc: '다중 선택 투표' },
+      { emoji: '❓', name: 'Q&A', desc: '질문 답변' },
+      { emoji: '⭐', name: '리뷰', desc: '피드백 수집' }
+    ];
+
+    const CAFE_MENU = [
+      { cat: '☕ 커피', items: [
+        { name: '아메리카노', price: '4,500원', emoji: '☕' },
+        { name: '카페라떼', price: '5,000원', emoji: '🥛' },
+        { name: '바닐라라떼', price: '5,500원', emoji: '🍦' },
+        { name: '카푸치노', price: '5,000원', emoji: '☕' },
+        { name: '카라멜마키아또', price: '5,500원', emoji: '🍯' },
+        { name: '콜드브루', price: '4,800원', emoji: '🧊' },
+        { name: '에스프레소', price: '3,500원', emoji: '☕' },
+        { name: '아인슈페너', price: '5,500원', emoji: '🍨' }
+      ]},
+      { cat: '🍵 차/음료', items: [
+        { name: '녹차라떼', price: '5,500원', emoji: '🍵' },
+        { name: '자몽에이드', price: '5,500원', emoji: '🍊' },
+        { name: '레몬에이드', price: '5,500원', emoji: '🍋' },
+        { name: '복숭아아이스티', price: '5,000원', emoji: '🍑' },
+        { name: '유자차', price: '5,000원', emoji: '🍊' },
+        { name: '밀크티', price: '5,500원', emoji: '🧋' },
+        { name: '핫초코', price: '5,000원', emoji: '🍫' },
+        { name: '스무디(딸기)', price: '6,000원', emoji: '🍓' }
+      ]},
+      { cat: '🥐 디저트/간식', items: [
+        { name: '크로와상', price: '4,000원', emoji: '🥐' },
+        { name: '마카롱세트', price: '6,000원', emoji: '🍬' },
+        { name: '치즈케이크', price: '6,500원', emoji: '🍰' },
+        { name: '머핀', price: '3,500원', emoji: '🧁' },
+        { name: '에그타르트', price: '3,000원', emoji: '🥧' },
+        { name: '와플', price: '5,000원', emoji: '🧇' },
+        { name: '쿠키세트', price: '4,000원', emoji: '🍪' },
+        { name: '과일컵', price: '5,000원', emoji: '🍓' }
+      ]},
+      { cat: '🍔 식사', items: [
+        { name: '샌드위치', price: '7,000원', emoji: '🥪' },
+        { name: '김밥', price: '5,000원', emoji: '🍙' },
+        { name: '도시락(불고기)', price: '9,000원', emoji: '🍱' },
+        { name: '도시락(치킨)', price: '9,000원', emoji: '🍗' },
+        { name: '떡볶이', price: '5,000원', emoji: '🌶️' },
+        { name: '컵밥', price: '6,000원', emoji: '🍚' },
+        { name: '피자(1조각)', price: '3,500원', emoji: '🍕' },
+        { name: '핫도그', price: '4,000원', emoji: '🌭' }
+      ]}
+    ];
+
+    // ===== STATE MANAGEMENT =====
+    const S = {
+      mode: MODE,
+      session: { code: '' },
+      participant: {
+        id: '',
+        name: '',
+        code: ''
+      },
+      selectedChar: -1,
+      selectedFoods: [],
+      selectedKws: [],
+      participants: [],
+      activeModule: null,
+      teams: { A: 0, B: 0, C: 0, D: 0 },
+      sessionStart: null,
+      activityLog: [],
+      foodOrders: []
+    };
+
+    let myCart = [];
+
+    // ===== BROADCAST CHANNEL =====
+    const bc = new BroadcastChannel('flow-spot-v4');
+
+    function bcSend(type, data) {
+      bc.postMessage({ type, data, ts: Date.now() });
+    }
+
+    bc.onmessage = (e) => {
+      const { type, data } = e.data;
+      console.log('[BC]', type, data);
+      switch (type) {
+        case 'REQUEST_STATE':
+          if (MODE === 'admin') bcSend('FULL_STATE', serializeState());
+          break;
+        case 'FULL_STATE':
+          mergeState(data);
+          renderAll();
+          break;
+        case 'PARTICIPANT_JOIN':
+          if (MODE !== 'participant') {
+            S.participants.push(data);
+            renderAll();
+          }
+          break;
+        case 'ACTIVITY_LAUNCH':
+          S.activeModule = data.module;
+          if (MODE === 'projector') renderProjector();
+          if (MODE === 'participant') {
+            showToast('📢 ' + data.module + ' 활동이 시작되었습니다!');
+            showParticipantActivity(data.module);
+          }
+          break;
+        case 'SCORE_UPDATE':
+          S.teams = data;
+          if (MODE === 'projector') renderProjectorScores();
+          if (MODE === 'admin') renderBackend();
+          break;
+        case 'ANNOUNCEMENT':
+          showToast('📣 ' + data.msg);
+          if (MODE === 'projector') showProjectorAnnouncement(data.msg);
+          break;
+        case 'PROJECTOR_REFRESH':
+          if (MODE === 'projector') location.reload();
+          break;
+        case 'FOOD_ORDER':
+          if (MODE === 'admin') {
+            S.foodOrders.push(data);
+            renderFoodOrders();
+          }
+          break;
+      }
+    };
+
+    // ===== UTILITY FUNCTIONS =====
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+
+    function getModuleEmoji(name) {
+      const all = [...MODULES, ...ENGAGEMENTS];
+      const found = all.find(m => m.name === name);
+      return found ? found.emoji : '🎯';
+    }
+
+    function genCode() {
+      return Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    function go(screenId) {
+      document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+        s.style.removeProperty('display');
+      });
+      const screen = document.getElementById(screenId);
+      if (screen) {
+        screen.classList.add('active');
+        if (screenId === 's-intro') setTimeout(() => initSelectionGrids(), 0);
+        window.scrollTo(0, 0);
+      }
+    }
+
+    function goNav(screenId) {
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      event.target.closest('.nav-item').classList.add('active');
+      go(screenId);
+    }
+
+    function switchAdminTab(tabName) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('admin-' + tabName).classList.add('active');
+    }
+
+    function showToast(msg) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function serializeState() {
+      return {
+        session: S.session,
+        participants: S.participants,
+        activeModule: S.activeModule,
+        teams: S.teams,
+        activityLog: S.activityLog,
+        sessionStart: S.sessionStart,
+        foodOrders: S.foodOrders
+      };
+    }
+
+    function mergeState(data) {
+      if (data.session) S.session = { ...S.session, ...data.session };
+      if (data.participants) S.participants = data.participants;
+      if (data.activeModule !== undefined) S.activeModule = data.activeModule;
+      if (data.teams) S.teams = data.teams;
+      if (data.activityLog) S.activityLog = data.activityLog;
+      if (data.sessionStart) S.sessionStart = data.sessionStart;
+      if (data.foodOrders) S.foodOrders = data.foodOrders;
+    }
+
+    // ===== PARTICIPANT FUNCTIONS =====
+    function initSelectionGrids() {
+      const charGrid = document.getElementById('char-grid');
+      if (!charGrid) return;
+
+      charGrid.innerHTML = ANIMALS.map((a, i) =>
+        '<div class="sel-item sel-char ' + (S.selectedChar === i ? 'selected' : '') + '" onclick="selectChar(' + i + ')">' + a + '</div>'
+      ).join('');
+
+      const foodGrid = document.getElementById('food-grid');
+      foodGrid.innerHTML = FOODS.map((f, i) =>
+        '<div class="sel-item sel-food ' + (S.selectedFoods.includes(i) ? 'selected' : '') + '" onclick="selectFood(' + i + ')"><span class="sel-emoji">' + f.e + '</span><span class="sel-name">' + f.n + '</span></div>'
+      ).join('');
+
+      const kwGrid = document.getElementById('kw-grid');
+      kwGrid.innerHTML = KEYWORDS.map((k, i) =>
+        '<div class="sel-pill ' + (S.selectedKws.includes(i) ? 'selected' : '') + '" onclick="selectKw(' + i + ')">' + k + '</div>'
+      ).join('');
+
+      updateBioPreview();
+    }
+
+    function selectChar(idx) {
+      S.selectedChar = S.selectedChar === idx ? -1 : idx;
+      initSelectionGrids();
+      updateBioPreview();
+    }
+
+    function selectFood(idx) {
+      if (S.selectedFoods.includes(idx)) {
+        S.selectedFoods = S.selectedFoods.filter(i => i !== idx);
+      } else {
+        if (S.selectedFoods.length < 3) {
+          S.selectedFoods.push(idx);
+        } else {
+          showToast('최대 3개까지 선택 가능합니다');
+          return;
+        }
+      }
+      initSelectionGrids();
+      updateBioPreview();
+    }
+
+    function selectKw(idx) {
+      if (S.selectedKws.includes(idx)) {
+        S.selectedKws = S.selectedKws.filter(i => i !== idx);
+      } else {
+        if (S.selectedKws.length < 5) {
+          S.selectedKws.push(idx);
+        } else {
+          showToast('최대 5개까지 선택 가능합니다');
+          return;
+        }
+      }
+      initSelectionGrids();
+      updateBioPreview();
+    }
+
+    function updateBioPreview() {
+      const charEmoji = S.selectedChar >= 0 ? ANIMALS[S.selectedChar] : '?';
+      const foodEmojis = S.selectedFoods.map(i => FOODS[i].e).join(' ');
+      const kwText = S.selectedKws.map(i => KEYWORDS[i]).join(', ');
+      const preview = charEmoji + ' ' + (foodEmojis || '?') + ' · ' + (kwText || '키워드');
+      document.getElementById('bio-preview').textContent = preview;
+
+      const btn = document.getElementById('complete-intro-btn');
+      if (S.selectedChar >= 0 && S.selectedFoods.length > 0 && S.selectedKws.length > 0) {
+        btn.disabled = false;
+      } else {
+        btn.disabled = true;
+      }
+    }
+
+    function completeIntro() {
+      const name = ANIMALS[S.selectedChar] + Math.random().toString(36).substring(2, 5);
+      S.participant.id = Math.random().toString(36).substring(2, 8);
+      S.participant.name = name;
+      S.participant.code = genCode();
+
+      bcSend('PARTICIPANT_JOIN', {
+        id: S.participant.id,
+        name: name,
+        code: S.participant.code,
+        char: S.selectedChar,
+        foods: S.selectedFoods,
+        keywords: S.selectedKws
+      });
+
+      updateHomeScreen();
+      go('s-home');
+      document.getElementById('bottom-nav').style.display = 'flex';
+      showToast('프로필 완성! 활동을 기다려주세요 ✨');
+    }
+
+    function updateHomeScreen() {
+      document.getElementById('home-avatar').textContent = ANIMALS[S.selectedChar];
+      document.getElementById('home-name').textContent = S.participant.name;
+      document.getElementById('home-code').textContent = 'CODE: ' + S.participant.code;
+      document.getElementById('session-count').textContent = (S.participants.length + 1) + '명';
+    }
+
+    function joinSession() {
+      const code = document.getElementById('input-code').value.toUpperCase();
+      if (code.length === 6) {
+        S.session.code = code;
+        go('s-intro');
+      } else {
+        showToast('6자리 코드를 입력해주세요');
+      }
+    }
+
+    function showParticipantActivity(moduleName) {
+      const actContent = document.getElementById('activity-content');
+      if (actContent) {
+        actContent.innerHTML = '<div style="text-align:center; padding:40px;"><div style="font-size:4rem; margin-bottom:20px;">' + getModuleEmoji(moduleName) + '</div><h2 style="font-size:1.5rem; margin-bottom:12px;">' + escapeHtml(moduleName) + '</h2><p style="color:#94a3b8;">강사의 안내를 따라주세요!</p></div>';
+      }
+      go('s-activity');
+    }
+
+    function renderCafeMenu() {
+      const container = document.getElementById('cafe-menu-container');
+      if (!container) return;
+      container.innerHTML = CAFE_MENU.map(cat => `
+        <div style="margin-bottom:24px;">
+          <h2 style="font-size:1.2rem; font-weight:900; margin-bottom:12px; color:#0f172a;">${cat.cat}</h2>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px;">
+            ${cat.items.map((item, idx) => `
+              <div onclick="addToCart('${escapeHtml(item.name)}','${item.emoji}','${item.price}')"
+                   style="background:white; border-radius:12px; padding:14px; box-shadow:0 2px 8px rgba(0,0,0,0.04); border:2px solid #f1f5f9; cursor:pointer; transition:all 0.2s; text-align:center;"
+                   onmouseover="this.style.borderColor='#3b82f6';this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.borderColor='#f1f5f9';this.style.transform=''">
+                <div style="font-size:2rem;">${item.emoji}</div>
+                <div style="font-weight:700; font-size:0.9rem; margin-top:4px;">${escapeHtml(item.name)}</div>
+                <div style="color:#94a3b8; font-size:0.8rem;">${item.price}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(name, emoji, price) {
+      myCart.push({ name, emoji, price });
+      renderCart();
+      showToast(emoji + ' ' + name + ' 추가됨');
+    }
+
+    function removeFromCart(idx) {
+      myCart.splice(idx, 1);
+      renderCart();
+    }
+
+    function renderCart() {
+      const cartEl = document.getElementById('cafe-cart');
+      const itemsEl = document.createElement('div');
+      const countEl = document.createElement('span');
+
+      if (myCart.length === 0) {
+        cartEl.style.display = 'none';
+        return;
+      }
+
+      cartEl.style.display = 'block';
+      countEl.textContent = myCart.length + '개';
+
+      let html = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><h3 style="font-weight:900;">🛒 내 주문</h3><span style="background:#3b82f6; color:white; padding:2px 10px; border-radius:20px; font-size:0.85rem; font-weight:700;">' + myCart.length + '개</span></div>';
+      html += '<div style="max-height:200px; overflow-y:auto;">';
+      html += myCart.map((item, i) =>
+        `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #f1f5f9;">
+          <span>${item.emoji} ${escapeHtml(item.name)} <span style="color:#94a3b8; font-size:0.8rem;">${item.price}</span></span>
+          <button onclick="removeFromCart(${i})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:1.2rem;">✕</button>
+        </div>`
+      ).join('');
+      html += '</div>';
+      html += '<button onclick="submitOrder()" style="width:100%; margin-top:12px; padding:14px; background:linear-gradient(135deg,#3b82f6,#60a5fa); color:white; border:none; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer;">주문 제출하기</button>';
+
+      cartEl.innerHTML = html;
+    }
+
+    function submitOrder() {
+      if (myCart.length === 0) return;
+
+      const order = {
+        participantId: S.participant.id,
+        participantName: S.participant.name,
+        items: [...myCart],
+        ts: new Date().toLocaleTimeString('ko'),
+        status: 'pending'
+      };
+
+      bcSend('FOOD_ORDER', order);
+      showToast('🎉 주문이 제출되었습니다!');
+      myCart = [];
+      renderCart();
+    }
+
+    // ===== ADMIN FUNCTIONS =====
+    function addScore(team, points) {
+      S.teams[team] += points;
+      S.activityLog.unshift({ ts: new Date().toLocaleTimeString('ko'), msg: `팀${team} +${points}점 (총 ${S.teams[team]}점)` });
+      renderBackend();
+      bcSend('SCORE_UPDATE', S.teams);
+      if (S.teams[team] >= 50) showCelebration(team, S.teams[team]);
+      if (S.activityLog.length > 20) S.activityLog = S.activityLog.slice(0, 20);
+    }
+
+    function logActivity(msg) {
+      S.activityLog.unshift({ ts: new Date().toLocaleTimeString('ko'), msg });
+      if (S.activityLog.length > 20) S.activityLog = S.activityLog.slice(0, 20);
+    }
+
+    function renderBackend() {
+      ['A','B','C','D'].forEach(team => {
+        const el = document.getElementById('score-' + team);
+        if (el) el.textContent = S.teams[team] + '점';
+      });
+      const logEl = document.getElementById('activity-log');
+      if (logEl) {
+        logEl.innerHTML = S.activityLog.map(e =>
+          `<div style="padding:8px 0; border-bottom:1px solid #f1f5f9; font-size:0.85rem;"><span style="color:#94a3b8; margin-right:8px;">${e.ts}</span>${escapeHtml(e.msg)}</div>`
+        ).join('') || '<div style="color:#94a3b8; text-align:center; padding:20px;">아직 이벤트 없음</div>';
+      }
+      if (S.sessionStart) {
+        const elapsed = Math.floor((Date.now() - S.sessionStart) / 1000);
+        const min = Math.floor(elapsed / 60), sec = elapsed % 60;
+        const el = document.getElementById('session-elapsed');
+        if (el) el.textContent = `${min}분 ${sec}초`;
+      }
+      const statParticipants = document.getElementById('stat-participants');
+      if (statParticipants) statParticipants.textContent = S.participants.length + '명';
+      const statCode = document.getElementById('stat-code');
+      if (statCode) statCode.textContent = S.session.code || '------';
+    }
+
+    function renderFoodOrders() {
+      const list = document.getElementById('food-orders-list');
+      const total = document.getElementById('order-total');
+      if (!list) return;
+      total.textContent = S.foodOrders.length + '건';
+
+      if (S.foodOrders.length === 0) {
+        list.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:40px;">아직 주문이 없습니다</div>';
+        return;
+      }
+
+      list.innerHTML = S.foodOrders.map((order, i) => `
+        <div style="background:#f8fafc; border-radius:12px; padding:16px; margin-bottom:12px; border-left:4px solid ${order.status === 'confirmed' ? '#34d399' : '#fbbf24'};">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong>${escapeHtml(order.participantName)}</strong>
+            <span style="font-size:0.8rem; color:#94a3b8;">${order.ts}</span>
+          </div>
+          <div style="margin-bottom:8px;">
+            ${order.items.map(item => `<span style="display:inline-block; background:white; border:1px solid #e2e8f0; padding:4px 8px; border-radius:8px; font-size:0.85rem; margin:2px;">${item.emoji} ${escapeHtml(item.name)}</span>`).join('')}
+          </div>
+          <button onclick="confirmOrder(${i})" style="padding:6px 12px; background:${order.status === 'confirmed' ? '#34d399' : '#3b82f6'}; color:white; border:none; border-radius:8px; font-size:0.8rem; font-weight:700; cursor:pointer;">${order.status === 'confirmed' ? '✅ 확인됨' : '주문 확인'}</button>
+        </div>
+      `).join('');
+    }
+
+    function confirmOrder(idx) {
+      S.foodOrders[idx].status = 'confirmed';
+      renderFoodOrders();
+      logActivity('주문 확인: ' + S.foodOrders[idx].participantName);
+      renderBackend();
+    }
+
+    function showCelebration(team, score) {
+      showToast(`🎉 팀${team} ${score}점 달성!`);
+    }
+
+    function sendAnnouncement() {
+      const msg = document.getElementById('announce-input').value;
+      if (!msg) return;
+      bcSend('ANNOUNCEMENT', { msg });
+      logActivity(`공지: ${msg}`);
+      renderBackend();
+      document.getElementById('announce-input').value = '';
+      showToast('공지 발송 완료!');
+    }
+
+    function resetSession() {
+      if (!confirm('세션을 초기화하시겠습니까? 모든 데이터가 삭제됩니다.')) return;
+      S.participants = [];
+      S.teams = { A: 0, B: 0, C: 0, D: 0 };
+      S.activityLog = [];
+      S.sessionStart = Date.now();
+      S.foodOrders = [];
+      renderAdminDashboard();
+      renderBackend();
+      renderFoodOrders();
+      bcSend('FULL_STATE', serializeState());
+      showToast('세션 초기화 완료');
+    }
+
+    function adminLogin() {
+      const pw = document.getElementById('admin-pw').value;
+      if (pw === 'flow2024') {
+        S.session.code = genCode();
+        S.sessionStart = Date.now();
+        go('s-admin-dashboard');
+        document.getElementById('admin-session-code').textContent = 'CODE: ' + S.session.code;
+        renderAdminDashboard();
+        renderBackend();
+        renderFoodOrders();
+        setInterval(() => renderBackend(), 1000);
+        bcSend('FULL_STATE', serializeState());
+        startAdminBroadcast();
+      } else {
+        showToast('비밀번호가 올바르지 않습니다');
+      }
+    }
+
+    function adminLogout() {
+      if (confirm('로그아웃 하시겠습니까?')) {
+        go('s-admin-login');
+        document.getElementById('admin-pw').value = '';
+        stopAdminBroadcast();
+      }
+    }
+
+    function renderAdminDashboard() {
+      const modulesGrid = document.getElementById('modules-grid');
+      modulesGrid.innerHTML = MODULES.map(m =>
+        '<div class="module-card"><div class="module-card-icon">' + m.emoji + '</div><div class="module-card-title">' + m.name + '</div><div class="module-card-desc">' + m.desc + '</div><button class="module-card-btn" onclick="launchModule(\'' + m.name + '\')">시작</button></div>'
+      ).join('');
+
+      const engageGrid = document.getElementById('engage-grid');
+      engageGrid.innerHTML = ENGAGEMENTS.map(e =>
+        '<div class="module-card"><div class="module-card-icon">' + e.emoji + '</div><div class="module-card-title">' + e.name + '</div><div class="module-card-desc">' + e.desc + '</div><button class="module-card-btn" onclick="launchModule(\'' + e.name + '\')">시작</button></div>'
+      ).join('');
+
+      renderParticipants();
+    }
+
+    function renderParticipants() {
+      const pgrid = document.getElementById('participants-grid');
+      pgrid.innerHTML = S.participants.map(p =>
+        '<div class="participant-card"><div class="participant-avatar">' + (ANIMALS[p.char] || '🦊') + '</div><div class="participant-name">' + escapeHtml(p.name) + '</div><div class="participant-code">' + p.code + '</div></div>'
+      ).join('');
+      document.getElementById('admin-participant-count').textContent = '● LIVE ' + S.participants.length + '명';
+      const statParticipants = document.getElementById('stat-participants');
+      if (statParticipants) statParticipants.textContent = S.participants.length + '명';
+    }
+
+    function launchModule(name) {
+      S.activeModule = name;
+      bcSend('ACTIVITY_LAUNCH', { module: name });
+      logActivity(`활동 시작: ${name}`);
+      renderBackend();
+      showToast(name + ' 활동 시작! 📢');
+    }
+
+    function openProjector() {
+      window.open(window.location.href.split('?')[0] + '?mode=projector', 'projector', 'width=1920,height=1080');
+    }
+
+    function toggleScoreboard() {
+      showToast('스코어보드 토글됨');
+    }
+
+    function renderAll() {
+      if (MODE === 'admin') {
+        renderAdminDashboard();
+        renderBackend();
+        renderFoodOrders();
+      } else if (MODE === 'projector') {
+        renderProjector();
+      } else {
+        updateHomeScreen();
+      }
+    }
+
+    // ===== PROJECTOR FUNCTIONS =====
+    function renderProjector() {
+      const titleEl = document.getElementById('projector-title');
+      const subtitleEl = document.getElementById('projector-subtitle');
+      const content = document.getElementById('projector-content');
+
+      if (!S.activeModule) {
+        titleEl.textContent = 'FLOW SPOT';
+        subtitleEl.textContent = '기업교육 스팟 게임';
+        content.innerHTML = '<div class="proj-waiting"><div class="proj-waiting-icon">⏳</div><div>활동을 기다리고 있습니다...</div><div class="proj-participant-count">' + S.participants.length + '명 참여 중</div></div>';
+        return;
+      }
+
+      titleEl.textContent = S.activeModule;
+      subtitleEl.textContent = '';
+
+      let html = '<div class="proj-panel"><div class="proj-content">';
+      html += '<h2 style="font-size:2.5rem; margin-bottom:30px;">' + getModuleEmoji(S.activeModule) + ' ' + escapeHtml(S.activeModule) + '</h2>';
+      html += '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:30px;">';
+      ['A','B','C','D'].forEach((team, i) => {
+        const colors = ['#3b82f6','#fb923c','#34d399','#a855f7'];
+        html += '<div style="text-align:center;"><div style="font-size:3rem; font-weight:900; color:' + colors[i] + ';">' + (S.teams[team] || 0) + '</div><div style="font-size:1.2rem; opacity:0.7;">팀 ' + team + '</div></div>';
+      });
+      html += '</div>';
+
+      if (S.participants.length > 0) {
+        html += '<div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">';
+        S.participants.forEach(p => {
+          html += '<div style="background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 16px; text-align:center;"><div style="font-size:2rem;">' + (ANIMALS[p.char] || '🦊') + '</div><div style="font-size:0.85rem; margin-top:4px;">' + escapeHtml(p.name) + '</div></div>';
+        });
+        html += '</div>';
+      }
+
+      html += '</div></div>';
+      content.innerHTML = html;
+    }
+
+    function showProjectorAnnouncement(msg) {
+      const content = document.getElementById('projector-content');
+      const announcement = document.createElement('div');
+      announcement.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:30px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:white;font-size:2rem;font-weight:900;text-align:center;z-index:9999;animation:slideDown 0.5s ease-out;';
+      announcement.textContent = '📣 ' + msg;
+      document.body.appendChild(announcement);
+      setTimeout(() => announcement.remove(), 5000);
+    }
+
+    function renderProjectorScores() {
+      renderProjector();
+    }
+
+    // ===== BROADCAST CONTROL =====
+    let adminBroadcastInterval = null;
+
+    function startAdminBroadcast() {
+      if (adminBroadcastInterval) return;
+      adminBroadcastInterval = setInterval(() => {
+        bcSend('FULL_STATE', serializeState());
+      }, 3000);
+    }
+
+    function stopAdminBroadcast() {
+      if (adminBroadcastInterval) {
+        clearInterval(adminBroadcastInterval);
+        adminBroadcastInterval = null;
+      }
+    }
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('[INIT] MODE:', MODE);
+
+      initSelectionGrids();
+
+      if (MODE === 'admin') {
+        go('s-admin-login');
+      } else if (MODE === 'projector') {
+        go('s-projector');
+        bcSend('REQUEST_STATE', {});
+        setInterval(() => bcSend('REQUEST_STATE', {}), 5000);
+      } else {
+        go('s-landing');
+        document.getElementById('footer').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
