@@ -1415,6 +1415,11 @@
       animation: bounce 2s infinite;
     }
 
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-20px); }
@@ -1755,6 +1760,7 @@
         </div>
       </div>
       <div class="admin-actions">
+        <button class="btn-admin" onclick="openProjector()" style="background:#7c3aed;color:white;">🎬 프로젝터</button>
         <button class="btn-admin" onclick="refreshData()">새로고침</button>
         <button class="btn-admin" onclick="startNewSession()">새 세션</button>
         <button class="btn-admin" onclick="logout()">로그아웃</button>
@@ -1782,8 +1788,57 @@
     </div>
 
     <div class="admin-tab-content" id="tab-scores">
-      <h2 style="margin-bottom: 20px;">누적 점수</h2>
-      <div id="scores-display"></div>
+      <h2 style="margin-bottom: 20px;">팀 점수 관리</h2>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+        <div style="background:white; border-radius:16px; padding:20px; text-align:center; box-shadow:var(--shadow); border-top:4px solid #3B82F6;">
+          <div style="font-size:1.2rem; font-weight:900; color:#3B82F6; margin-bottom:8px;">팀 A</div>
+          <div id="score-A" style="font-size:2.5rem; font-weight:900;">0</div>
+          <div style="display:flex; gap:6px; margin-top:12px; justify-content:center;">
+            <button onclick="addScore('A',10)" style="padding:6px 12px; background:#3B82F6; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+10</button>
+            <button onclick="addScore('A',50)" style="padding:6px 12px; background:#2563EB; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+50</button>
+            <button onclick="addScore('A',100)" style="padding:6px 12px; background:#1D4ED8; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+100</button>
+          </div>
+        </div>
+        <div style="background:white; border-radius:16px; padding:20px; text-align:center; box-shadow:var(--shadow); border-top:4px solid #FB923C;">
+          <div style="font-size:1.2rem; font-weight:900; color:#FB923C; margin-bottom:8px;">팀 B</div>
+          <div id="score-B" style="font-size:2.5rem; font-weight:900;">0</div>
+          <div style="display:flex; gap:6px; margin-top:12px; justify-content:center;">
+            <button onclick="addScore('B',10)" style="padding:6px 12px; background:#FB923C; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+10</button>
+            <button onclick="addScore('B',50)" style="padding:6px 12px; background:#EA580C; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+50</button>
+            <button onclick="addScore('B',100)" style="padding:6px 12px; background:#C2410C; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+100</button>
+          </div>
+        </div>
+        <div style="background:white; border-radius:16px; padding:20px; text-align:center; box-shadow:var(--shadow); border-top:4px solid #34D399;">
+          <div style="font-size:1.2rem; font-weight:900; color:#34D399; margin-bottom:8px;">팀 C</div>
+          <div id="score-C" style="font-size:2.5rem; font-weight:900;">0</div>
+          <div style="display:flex; gap:6px; margin-top:12px; justify-content:center;">
+            <button onclick="addScore('C',10)" style="padding:6px 12px; background:#34D399; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+10</button>
+            <button onclick="addScore('C',50)" style="padding:6px 12px; background:#059669; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+50</button>
+            <button onclick="addScore('C',100)" style="padding:6px 12px; background:#047857; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+100</button>
+          </div>
+        </div>
+        <div style="background:white; border-radius:16px; padding:20px; text-align:center; box-shadow:var(--shadow); border-top:4px solid #8B5CF6;">
+          <div style="font-size:1.2rem; font-weight:900; color:#8B5CF6; margin-bottom:8px;">팀 D</div>
+          <div id="score-D" style="font-size:2.5rem; font-weight:900;">0</div>
+          <div style="display:flex; gap:6px; margin-top:12px; justify-content:center;">
+            <button onclick="addScore('D',10)" style="padding:6px 12px; background:#8B5CF6; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+10</button>
+            <button onclick="addScore('D',50)" style="padding:6px 12px; background:#7C3AED; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+50</button>
+            <button onclick="addScore('D',100)" style="padding:6px 12px; background:#6D28D9; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700;">+100</button>
+          </div>
+        </div>
+      </div>
+      <div style="background:white; border-radius:12px; padding:16px; box-shadow:var(--shadow); margin-bottom:20px;">
+        <h3 style="margin-bottom:12px;">📣 공지 발송</h3>
+        <div style="display:flex; gap:8px;">
+          <input id="announce-input" type="text" placeholder="공지 내용 입력..." style="flex:1; padding:10px; border:2px solid var(--border); border-radius:10px; font-family:var(--font);">
+          <button onclick="sendAnnouncement()" style="padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:700; cursor:pointer;">발송</button>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button onclick="bc.postMessage({type:'PROJECTOR_REFRESH'})" style="flex:1; padding:10px; background:#f0fdf4; color:#16a34a; border:2px solid #bbf7d0; border-radius:10px; font-weight:700; cursor:pointer;">🖥️ 프로젝터 새로고침</button>
+        <button onclick="launchScoreboard()" style="flex:1; padding:10px; background:#eff6ff; color:#3b82f6; border:2px solid #bfdbfe; border-radius:10px; font-weight:700; cursor:pointer;">📊 스코어보드 표시</button>
+      </div>
+      <div id="activity-log" style="margin-top:16px; max-height:200px; overflow-y:auto;"></div>
     </div>
 
     <div class="admin-tab-content" id="tab-teams">
@@ -1923,6 +1978,51 @@
       { q: 'AI 시대에?', a: '적극 활용', b: '신중하게 접근' }
     ];
 
+    const CAFE_MENU = [
+      { cat: '☕ 커피', items: [
+        { name: '아메리카노', price: '4,500원', emoji: '☕' },
+        { name: '카페라떼', price: '5,000원', emoji: '🥛' },
+        { name: '바닐라라떼', price: '5,500원', emoji: '🍦' },
+        { name: '카푸치노', price: '5,000원', emoji: '☕' },
+        { name: '카라멜마키아또', price: '5,500원', emoji: '🍯' },
+        { name: '콜드브루', price: '4,800원', emoji: '🧊' },
+        { name: '에스프레소', price: '3,500원', emoji: '☕' },
+        { name: '아인슈페너', price: '5,500원', emoji: '🍨' }
+      ]},
+      { cat: '🍵 차/음료', items: [
+        { name: '녹차라떼', price: '5,500원', emoji: '🍵' },
+        { name: '자몽에이드', price: '5,500원', emoji: '🍊' },
+        { name: '레몬에이드', price: '5,500원', emoji: '🍋' },
+        { name: '복숭아아이스티', price: '5,000원', emoji: '🍑' },
+        { name: '밀크티', price: '5,500원', emoji: '🧋' },
+        { name: '핫초코', price: '5,000원', emoji: '🍫' },
+        { name: '딸기스무디', price: '6,000원', emoji: '🍓' },
+        { name: '유자차', price: '5,000원', emoji: '🍊' }
+      ]},
+      { cat: '🥐 디저트', items: [
+        { name: '크로와상', price: '4,000원', emoji: '🥐' },
+        { name: '마카롱세트', price: '6,000원', emoji: '🍬' },
+        { name: '치즈케이크', price: '6,500원', emoji: '🍰' },
+        { name: '에그타르트', price: '3,000원', emoji: '🥧' },
+        { name: '와플', price: '5,000원', emoji: '🧇' },
+        { name: '쿠키세트', price: '4,000원', emoji: '🍪' },
+        { name: '머핀', price: '3,500원', emoji: '🧁' },
+        { name: '과일컵', price: '5,000원', emoji: '🍇' }
+      ]},
+      { cat: '🍔 식사', items: [
+        { name: '샌드위치', price: '7,000원', emoji: '🥪' },
+        { name: '김밥', price: '5,000원', emoji: '🍙' },
+        { name: '도시락(불고기)', price: '9,000원', emoji: '🍱' },
+        { name: '도시락(치킨)', price: '9,000원', emoji: '🍗' },
+        { name: '떡볶이', price: '5,000원', emoji: '🌶️' },
+        { name: '컵밥', price: '6,000원', emoji: '🍚' },
+        { name: '피자(1조각)', price: '3,500원', emoji: '🍕' },
+        { name: '핫도그', price: '4,000원', emoji: '🌭' }
+      ]}
+    ];
+
+    let myCart = [];
+
     const MODE = {
       PARTICIPANT: 'participant',
       ADMIN: 'admin',
@@ -1973,17 +2073,31 @@
           launchActivityFromBroadcast(data);
           break;
         case 'SCORE_UPDATE':
-          S.activityLog = data.activityLog || S.activityLog;
-          updateUI();
+          if (data.teams) S.teams = data.teams;
+          if (S.mode === MODE.PROJECTOR) updateProjectorUI();
+          if (S.mode === MODE.ADMIN) {
+            ['A','B','C','D'].forEach(t => { const el = document.getElementById('score-'+t); if(el) el.textContent = S.teams[t] || 0; });
+          }
           break;
         case 'ANNOUNCEMENT':
-          console.log('Announcement:', data.message);
+          if (data.message) showToast('📣 ' + data.message);
+          if (S.mode === MODE.PROJECTOR) {
+            const ann = document.createElement('div');
+            ann.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:30px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:white;font-size:2rem;font-weight:900;text-align:center;z-index:9999;';
+            ann.textContent = '📣 ' + data.message;
+            document.body.appendChild(ann);
+            setTimeout(() => ann.remove(), 5000);
+          }
           break;
         case 'PROJECTOR_REFRESH':
-          if (S.mode === MODE.PROJECTOR) updateUI();
+          if (S.mode === MODE.PROJECTOR) location.reload();
+          break;
+        case 'REQUEST_STATE':
+          if (S.mode === MODE.ADMIN) bc.postMessage({ type: 'FULL_STATE', data: serializeState() });
           break;
         case 'FOOD_ORDER':
           S.foodOrders.push(data);
+          if (S.mode === MODE.ADMIN) renderCafeOrders();
           break;
         case 'WORD_CLOUD_ADD':
           S.wordCloudWords.push(data.word);
@@ -2044,8 +2158,9 @@
       if (data.session) S.session = { ...S.session, ...data.session };
       if (data.participant) S.participant = { ...S.participant, ...data.participant };
       if (data.participants) S.participants = data.participants;
-      if (data.activeModule) S.activeModule = data.activeModule;
+      if (data.activeModule !== undefined) S.activeModule = data.activeModule;
       if (data.activeModuleData) S.activeModuleData = data.activeModuleData;
+      if (data.teams) S.teams = data.teams;
       if (data.wordCloudWords) S.wordCloudWords = data.wordCloudWords;
       if (data.stickyNotes) S.stickyNotes = data.stickyNotes;
       if (data.balanceVotes) S.balanceVotes = data.balanceVotes;
@@ -2054,6 +2169,8 @@
       if (data.pollOptions) S.pollOptions = data.pollOptions;
       if (data.teamAssignments) S.teamAssignments = data.teamAssignments;
       if (data.activityLog) S.activityLog = data.activityLog;
+      if (data.foodOrders) S.foodOrders = data.foodOrders;
+      if (data.activityTimer !== undefined) S.activityTimer = data.activityTimer;
     }
 
     function showScreen(screenId) {
@@ -2533,8 +2650,40 @@
       } else if (moduleName === '워드클라우드') {
         html += `
           <div class="form-group">
-            <label>프롬프트</label>
-            <textarea id="wordcloud-prompt" placeholder="수집할 단어의 주제"></textarea>
+            <label>프롬프트 (참가자에게 표시)</label>
+            <textarea id="wordcloud-prompt" placeholder="예: 오늘 교육에서 기대하는 것은?"></textarea>
+          </div>
+        `;
+      } else if (moduleName === '포스트잇') {
+        html += `
+          <div class="form-group">
+            <label>주제/질문 (참가자에게 표시)</label>
+            <textarea id="sticky-topic" placeholder="예: 우리 팀의 강점은 무엇인가요?"></textarea>
+          </div>
+        `;
+      } else if (moduleName === 'Q&A') {
+        html += `
+          <div class="form-group">
+            <label>Q&A 주제</label>
+            <textarea id="qa-topic" placeholder="예: 오늘 강의에 대해 궁금한 점을 자유롭게 질문해주세요"></textarea>
+          </div>
+        `;
+      } else if (moduleName === '리뷰') {
+        html += `
+          <div class="form-group">
+            <label>평가 대상</label>
+            <input type="text" id="review-subject" placeholder="예: 오늘 교육 전체">
+          </div>
+          <div class="form-group">
+            <label>안내 문구</label>
+            <textarea id="review-guide" placeholder="예: 1~5점으로 평가해주시고, 한줄 코멘트를 남겨주세요"></textarea>
+          </div>
+        `;
+      } else if (moduleName === '그라운드룰') {
+        html += `
+          <div class="form-group">
+            <label>사전 규칙 (줄바꿈으로 구분)</label>
+            <textarea id="groundrule-list" placeholder="예:&#10;서로 존중하기&#10;핸드폰 무음&#10;적극 참여하기" style="min-height:120px;"></textarea>
           </div>
         `;
       }
@@ -2568,7 +2717,14 @@
 
     function launchActivity() {
       const timer = parseInt(document.getElementById('module-timer').value) || 60;
-      S.activeModuleData = { timer };
+      const desc = document.getElementById('module-desc') ? document.getElementById('module-desc').value : '';
+      S.activeModuleData = { timer, desc };
+
+      // Reset activity data
+      S.wordCloudWords = [];
+      S.stickyNotes = [];
+      S.balanceVotes = { A: 0, B: 0 };
+      S.pollVotes = {};
 
       if (S.activeModule === '밸런스게임') {
         S.activeModuleData.question = document.getElementById('balance-question').value;
@@ -2577,10 +2733,30 @@
       } else if (S.activeModule === '투표') {
         S.activeModuleData.question = document.getElementById('poll-question').value;
         S.activeModuleData.options = Array.from(document.querySelectorAll('.poll-opt')).map(el => el.value).filter(v => v);
+      } else if (S.activeModule === '워드클라우드') {
+        const prompt = document.getElementById('wordcloud-prompt');
+        if (prompt) S.activeModuleData.prompt = prompt.value;
+      } else if (S.activeModule === '포스트잇') {
+        const topic = document.getElementById('sticky-topic');
+        if (topic) S.activeModuleData.topic = topic.value;
+      } else if (S.activeModule === 'Q&A') {
+        const topic = document.getElementById('qa-topic');
+        if (topic) S.activeModuleData.topic = topic.value;
+      } else if (S.activeModule === '리뷰') {
+        const subject = document.getElementById('review-subject');
+        const guide = document.getElementById('review-guide');
+        if (subject) S.activeModuleData.subject = subject.value;
+        if (guide) S.activeModuleData.guide = guide.value;
+      } else if (S.activeModule === '그라운드룰') {
+        const list = document.getElementById('groundrule-list');
+        if (list) S.activeModuleData.rules = list.value.split('\n').filter(r => r.trim());
       }
 
       closeModal();
       broadcastActivity();
+      S.activityLog.unshift({ ts: new Date().toLocaleTimeString('ko'), msg: `활동 시작: ${S.activeModule}` });
+      renderActivityLog();
+      showToast(S.activeModule + ' 활동 시작! 📢');
     }
 
     function broadcastActivity() {
@@ -2667,6 +2843,80 @@
       document.getElementById('input-code').value = '';
     }
 
+    // ===== ADMIN: PROJECTOR, SCORES, ANNOUNCEMENTS =====
+    function openProjector() {
+      window.open(window.location.href.split('?')[0] + '?mode=projector', 'projector', 'width=1920,height=1080');
+    }
+
+    function addScore(team, points) {
+      S.teams[team] = (S.teams[team] || 0) + points;
+      const el = document.getElementById('score-' + team);
+      if (el) el.textContent = S.teams[team];
+      S.activityLog.unshift({ ts: new Date().toLocaleTimeString('ko'), msg: `팀${team} +${points}점 (총 ${S.teams[team]}점)` });
+      renderActivityLog();
+      bc.postMessage({ type: 'SCORE_UPDATE', data: { teams: S.teams } });
+      if (S.teams[team] >= 50) showToast(`🎉 팀${team} ${S.teams[team]}점 달성!`);
+    }
+
+    function renderActivityLog() {
+      const logEl = document.getElementById('activity-log');
+      if (!logEl) return;
+      logEl.innerHTML = S.activityLog.slice(0, 20).map(e =>
+        `<div style="padding:6px 0; border-bottom:1px solid #f1f5f9; font-size:0.85rem;"><span style="color:#94a3b8; margin-right:8px;">${e.ts}</span>${escapeHtml(e.msg)}</div>`
+      ).join('') || '<div style="color:#94a3b8; text-align:center; padding:20px;">아직 이벤트 없음</div>';
+    }
+
+    function sendAnnouncement() {
+      const msg = document.getElementById('announce-input').value.trim();
+      if (!msg) return;
+      bc.postMessage({ type: 'ANNOUNCEMENT', data: { message: msg } });
+      S.activityLog.unshift({ ts: new Date().toLocaleTimeString('ko'), msg: `📣 공지: ${msg}` });
+      renderActivityLog();
+      document.getElementById('announce-input').value = '';
+      showToast('공지 발송 완료!');
+    }
+
+    function launchScoreboard() {
+      S.activeModule = '점수';
+      S.activeModuleData = {};
+      bc.postMessage({ type: 'ACTIVITY_LAUNCH', data: { module: '점수', config: {} } });
+      showToast('스코어보드가 프로젝터에 표시됩니다');
+    }
+
+    function showToast(msg) {
+      const toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#0f172a;color:white;padding:14px 24px;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,0.15);z-index:10000;animation:slideIn 0.3s ease-out;font-size:0.95rem;max-width:400px;';
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function renderCafeOrders() {
+      const display = document.getElementById('cafe-orders-display');
+      if (!display) return;
+      if (S.foodOrders.length === 0) {
+        display.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:40px;">아직 주문이 없습니다</div>';
+        return;
+      }
+      display.innerHTML = S.foodOrders.map((order, i) => `
+        <div style="background:white; border-radius:12px; padding:16px; margin-bottom:12px; border-left:4px solid ${order.status === 'confirmed' ? '#34d399' : '#fbbf24'}; box-shadow:var(--shadow-sm);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong>${escapeHtml(order.participantName || order.name || '참가자')}</strong>
+            <span style="font-size:0.8rem; color:#94a3b8;">${order.ts || ''}</span>
+          </div>
+          <div style="margin-bottom:8px;">
+            ${(order.items || []).map(item => `<span style="display:inline-block; background:#f8fafc; border:1px solid #e2e8f0; padding:4px 8px; border-radius:8px; font-size:0.85rem; margin:2px;">${item.emoji} ${escapeHtml(item.name)}</span>`).join('')}
+          </div>
+          <button onclick="confirmOrder(${i})" style="padding:6px 12px; background:${order.status === 'confirmed' ? '#34d399' : '#3b82f6'}; color:white; border:none; border-radius:8px; font-size:0.8rem; font-weight:700; cursor:pointer;">${order.status === 'confirmed' ? '✅ 확인됨' : '주문 확인'}</button>
+        </div>
+      `).join('');
+    }
+
+    function confirmOrder(idx) {
+      S.foodOrders[idx].status = 'confirmed';
+      renderCafeOrders();
+    }
+
     // ===== PROJECTOR FUNCTIONS =====
     function initProjector() {
       S.mode = MODE.PROJECTOR;
@@ -2711,8 +2961,14 @@
         case 'Q&A':
           renderProjectorQA(content);
           break;
+        case '그라운드룰':
+          renderProjectorGroundrules(content);
+          break;
+        case '리뷰':
+          renderProjectorReview(content);
+          break;
         default:
-          content.innerHTML = `<p style="text-align: center; font-size: 1.5rem;">${S.activeModule} 진행 중...</p>`;
+          content.innerHTML = `<div style="text-align:center; padding:60px;"><div style="font-size:6rem; margin-bottom:24px;">${getModuleEmoji(S.activeModule)}</div><h2 style="font-size:2.5rem; font-weight:900; color:white; margin-bottom:16px;">${escapeHtml(S.activeModule)}</h2><p style="font-size:1.3rem; color:rgba(255,255,255,0.6);">활동이 진행 중입니다</p><p style="font-size:1.1rem; color:rgba(255,255,255,0.4); margin-top:16px;">👥 참여자: ${S.participants.length}명</p></div>`;
       }
     }
 
@@ -2813,13 +3069,106 @@
     }
 
     function renderProjectorQA(container) {
-      container.innerHTML = `<div class="proj-qa-list" id="proj-qa"></div>`;
-      const qaDiv = document.getElementById('proj-qa');
-      qaDiv.innerHTML = S.wordCloudWords.map(q => `
-        <div class="proj-qa-item">
-          <div class="proj-qa-text">Q: ${escapeHtml(q)}</div>
+      const questions = S.stickyNotes.length > 0 ? S.stickyNotes : S.wordCloudWords;
+      if (questions.length === 0) {
+        container.innerHTML = '<div style="text-align:center; color:rgba(255,255,255,0.4); padding:60px;"><div style="font-size:4rem; margin-bottom:20px;">❓</div><p style="font-size:1.5rem;">질문을 기다리는 중...</p></div>';
+        return;
+      }
+      container.innerHTML = `<div style="display:grid; gap:16px; width:100%;">
+        ${questions.map(q => `
+          <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:24px; font-size:1.3rem; color:white;">
+            <span style="color:#60A5FA; font-weight:900;">Q.</span> ${escapeHtml(q)}
+          </div>
+        `).join('')}
+      </div>`;
+    }
+
+    function renderProjectorGroundrules(container) {
+      const rules = (S.activeModuleData && S.activeModuleData.rules) || [];
+      if (rules.length === 0) {
+        container.innerHTML = '<div style="text-align:center; color:rgba(255,255,255,0.4); padding:60px;"><div style="font-size:4rem; margin-bottom:20px;">📋</div><p style="font-size:1.5rem;">그라운드룰 설정 중...</p></div>';
+        return;
+      }
+      container.innerHTML = `<div style="width:100%; max-width:800px; margin:0 auto;">
+        <h2 style="text-align:center; font-size:2rem; color:white; margin-bottom:32px;">📋 우리의 그라운드룰</h2>
+        ${rules.map((rule, i) => `
+          <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:20px 28px; margin-bottom:12px; font-size:1.4rem; color:white; display:flex; align-items:center; gap:16px;">
+            <span style="background:linear-gradient(135deg,#3b82f6,#60a5fa); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; flex-shrink:0;">${i+1}</span>
+            ${escapeHtml(rule)}
+          </div>
+        `).join('')}
+      </div>`;
+    }
+
+    function renderProjectorReview(container) {
+      container.innerHTML = '<div style="text-align:center; color:rgba(255,255,255,0.6); padding:60px;"><div style="font-size:4rem; margin-bottom:20px;">⭐</div><p style="font-size:1.5rem;">리뷰를 수집하고 있습니다...</p></div>';
+    }
+
+    // ===== CAFE FUNCTIONS =====
+    function renderCafeMenu() {
+      const container = document.getElementById('cafe-menu-container');
+      if (!container) return;
+      container.innerHTML = CAFE_MENU.map(cat => `
+        <div style="margin-bottom:24px;">
+          <h2 style="font-size:1.2rem; font-weight:900; margin-bottom:12px; color:#0f172a;">${cat.cat}</h2>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px;">
+            ${cat.items.map(item => `
+              <div onclick="addToCart('${escapeHtml(item.name)}','${item.emoji}','${item.price}')"
+                   style="background:white; border-radius:12px; padding:14px; box-shadow:0 2px 8px rgba(0,0,0,0.04); border:2px solid #f1f5f9; cursor:pointer; transition:all 0.2s; text-align:center;"
+                   onmouseover="this.style.borderColor='#3b82f6';this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.borderColor='#f1f5f9';this.style.transform=''">
+                <div style="font-size:2rem;">${item.emoji}</div>
+                <div style="font-weight:700; font-size:0.9rem; margin-top:4px;">${escapeHtml(item.name)}</div>
+                <div style="color:#94a3b8; font-size:0.8rem;">${item.price}</div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       `).join('');
+    }
+
+    function addToCart(name, emoji, price) {
+      myCart.push({ name, emoji, price });
+      renderCart();
+      showToast(emoji + ' ' + name + ' 추가됨');
+    }
+
+    function removeFromCart(idx) {
+      myCart.splice(idx, 1);
+      renderCart();
+    }
+
+    function renderCart() {
+      const cartEl = document.getElementById('cafe-cart');
+      if (!cartEl) return;
+      if (myCart.length === 0) { cartEl.innerHTML = ''; return; }
+      let html = '<div style="position:fixed;bottom:70px;left:0;right:0;background:white;padding:16px 20px;box-shadow:0 -4px 20px rgba(0,0,0,0.1);z-index:100;max-height:300px;overflow-y:auto;">';
+      html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><h3 style="font-weight:900;">🛒 내 주문</h3><span style="background:#3b82f6; color:white; padding:2px 10px; border-radius:20px; font-size:0.85rem; font-weight:700;">' + myCart.length + '개</span></div>';
+      html += myCart.map((item, i) =>
+        `<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #f1f5f9;">
+          <span>${item.emoji} ${escapeHtml(item.name)} <span style="color:#94a3b8; font-size:0.8rem;">${item.price}</span></span>
+          <button onclick="removeFromCart(${i})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:1.2rem;">✕</button>
+        </div>`
+      ).join('');
+      html += '<button onclick="submitOrder()" style="width:100%; margin-top:12px; padding:14px; background:linear-gradient(135deg,#3b82f6,#60a5fa); color:white; border:none; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer;">주문 제출하기</button>';
+      html += '</div>';
+      cartEl.innerHTML = html;
+    }
+
+    function submitOrder() {
+      if (myCart.length === 0) return;
+      bc.postMessage({
+        type: 'FOOD_ORDER',
+        data: {
+          participantName: S.participant.name,
+          items: [...myCart],
+          ts: new Date().toLocaleTimeString('ko'),
+          status: 'pending'
+        }
+      });
+      showToast('🎉 주문이 제출되었습니다!');
+      myCart = [];
+      renderCart();
     }
 
     // ===== INITIALIZATION =====
@@ -2827,8 +3176,11 @@
       const url = new URL(window.location);
       if (url.searchParams.get('mode') === 'projector') {
         initProjector();
+      } else if (url.searchParams.get('mode') === 'admin') {
+        showScreen('s-admin-login');
       } else {
         showScreen('s-landing');
+        renderCafeMenu();
       }
     });
   </script>
