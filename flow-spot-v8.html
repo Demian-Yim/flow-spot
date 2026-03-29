@@ -746,12 +746,25 @@
       text-align: center;
       cursor: pointer;
       transition: var(--transition);
+      color: var(--text);
     }
 
     #s-activity.fullscreen-mode .balance-option {
       padding: 50px 30px;
       font-size: 1.3rem;
+      color: var(--text);
     }
+
+    .balance-option-a {
+      border-color: #3B82F6 !important;
+      background: linear-gradient(135deg, #EFF6FF, #DBEAFE) !important;
+    }
+    .balance-option-b {
+      border-color: #F97316 !important;
+      background: linear-gradient(135deg, #FFF7ED, #FFEDD5) !important;
+    }
+    .balance-option-a .balance-emoji { color: #2563EB; }
+    .balance-option-b .balance-emoji { color: #EA580C; }
 
     .balance-option:hover {
       border-color: var(--primary);
@@ -2101,19 +2114,35 @@
           break;
         case 'WORD_CLOUD_ADD':
           S.wordCloudWords.push(data.word);
-          updateWordCloud();
+          if (S.mode === MODE.PROJECTOR) {
+            updateProjectorActivity();
+          } else {
+            updateWordCloud();
+          }
           break;
         case 'STICKY_NOTE_ADD':
           S.stickyNotes.push(data.note);
-          updateStickyNotes();
+          if (S.mode === MODE.PROJECTOR) {
+            updateProjectorActivity();
+          } else {
+            updateStickyNotes();
+          }
           break;
         case 'BALANCE_VOTE':
           S.balanceVotes[data.option]++;
-          updateBalanceResults();
+          if (S.mode === MODE.PROJECTOR) {
+            updateProjectorActivity();
+          } else {
+            updateBalanceResults();
+          }
           break;
         case 'POLL_VOTE':
           S.pollVotes[data.option] = (S.pollVotes[data.option] || 0) + 1;
-          updatePollResults();
+          if (S.mode === MODE.PROJECTOR) {
+            updateProjectorActivity();
+          } else {
+            updatePollResults();
+          }
           break;
         case 'TEAM_FORMATION':
           S.teamAssignments = data.assignments || S.teamAssignments;
@@ -2310,13 +2339,19 @@
       S.pollOptions = [];
 
       startActivityTimer();
-      renderActivityContent();
-      showScreen('s-activity');
-      document.getElementById('s-activity').classList.add('fullscreen-mode');
-      document.getElementById('bottom-nav').classList.add('hidden');
 
       if (S.mode === MODE.PROJECTOR) {
+        // 프로젝터: s-projector 화면 유지, activity-mode 추가 후 proj-content 업데이트
+        showScreen('s-projector');
+        document.getElementById('s-projector').classList.add('activity-mode');
         updateProjectorActivity();
+      } else {
+        // 참가자: 풀스크린 활동 화면으로 전환
+        renderActivityContent();
+        showScreen('s-activity');
+        document.getElementById('s-activity').classList.add('fullscreen-mode');
+        const nav = document.getElementById('bottom-nav');
+        if (nav) nav.classList.add('hidden');
       }
     }
 
@@ -2331,26 +2366,47 @@
       }
 
       switch (S.activeModule) {
-        case '워드클라우드':
+        case '워드클라우드': {
+          const prompt = S.activeModuleData.prompt || '지금 떠오르는 단어를 입력하세요';
           content.innerHTML = `
-            <div class="word-cloud-input">
-              <input type="text" placeholder="단어 입력" id="word-input">
-              <button onclick="addWord()">추가</button>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:20px; padding:20px;">
+              <p style="color:rgba(255,255,255,0.75); font-size:1rem; text-align:center;">${escapeHtml(prompt)}</p>
+              <div style="display:flex; gap:12px; width:100%; max-width:480px;">
+                <input type="text" id="word-input" placeholder="단어 입력 후 엔터"
+                  onkeypress="if(event.key==='Enter'){addWord();}"
+                  style="flex:1; padding:16px 20px; border-radius:14px; border:2px solid rgba(255,255,255,0.3);
+                    background:rgba(255,255,255,0.15); color:white; font-size:1.1rem; outline:none;
+                    backdrop-filter:blur(8px);">
+                <button onclick="addWord()" style="padding:16px 24px; border-radius:14px; border:none;
+                  background:#3B82F6; color:white; font-size:1rem; font-weight:700; cursor:pointer;">
+                  추가 ➕
+                </button>
+              </div>
+              <div class="word-cloud-display" id="word-display" style="width:100%; max-width:560px;"></div>
             </div>
-            <div class="word-cloud-display" id="word-display"></div>
           `;
           updateWordCloud();
           break;
-        case '포스트잇':
+        }
+        case '포스트잇': {
+          const topic = S.activeModuleData.topic || '자유롭게 생각을 작성해주세요';
           content.innerHTML = `
-            <div class="sticky-note-input">
-              <textarea placeholder="생각을 자유롭게 작성해주세요" id="sticky-input"></textarea>
-              <button class="btn-primary" onclick="addStickyNote()">작성</button>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; padding:20px;">
+              <p style="color:rgba(255,255,255,0.75); font-size:1rem; text-align:center;">${escapeHtml(topic)}</p>
+              <textarea id="sticky-input" placeholder="내 생각 작성..."
+                style="width:100%; max-width:480px; height:140px; padding:16px; border-radius:14px;
+                  border:2px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.15); color:white;
+                  font-size:1rem; resize:none; outline:none; backdrop-filter:blur(8px);"></textarea>
+              <button onclick="addStickyNote()" style="padding:16px 40px; border-radius:14px; border:none;
+                background:#F59E0B; color:white; font-size:1.1rem; font-weight:700; cursor:pointer; width:100%; max-width:480px;">
+                📝 제출
+              </button>
+              <div class="sticky-notes-grid" id="sticky-display" style="width:100%;"></div>
             </div>
-            <div class="sticky-notes-grid" id="sticky-display"></div>
           `;
           updateStickyNotes();
           break;
+        }
         case '밸런스게임':
           renderBalanceGame(content);
           break;
@@ -2358,35 +2414,86 @@
           renderPoll(content);
           break;
         case '팀매칭':
-          content.innerHTML = '<p style="text-align: center; color: white; font-size: 1.2rem;">강사의 안내를 따라주세요</p>';
+          content.innerHTML = `<div style="text-align:center; padding:40px;">
+            <div style="font-size:4rem; margin-bottom:20px;">👥</div>
+            <p style="color:rgba(255,255,255,0.9); font-size:1.4rem; font-weight:600;">강사의 안내에 따라 팀을 구성하세요</p>
+          </div>`;
           break;
         case '점수':
-          content.innerHTML = '<p style="text-align: center; color: white; font-size: 1.2rem;">강사의 안내를 따라주세요</p>';
+          content.innerHTML = `<div style="text-align:center; padding:40px;">
+            <div style="font-size:4rem; margin-bottom:20px;">🏆</div>
+            <p style="color:rgba(255,255,255,0.9); font-size:1.4rem; font-weight:600;">현재 점수를 확인하세요</p>
+          </div>`;
           break;
-        case 'Q&A':
+        case 'Q&A': {
+          const qaTopic = S.activeModuleData.topic || '궁금한 점을 질문해주세요';
           content.innerHTML = `
-            <div class="sticky-note-input">
-              <textarea placeholder="질문을 입력해주세요" id="qa-input" maxlength="200"></textarea>
-              <button class="btn-primary" onclick="submitQuestion()">질문</button>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; padding:20px;">
+              <p style="color:rgba(255,255,255,0.75); font-size:1rem; text-align:center;">${escapeHtml(qaTopic)}</p>
+              <textarea id="qa-input" placeholder="질문을 입력해주세요..." maxlength="200"
+                style="width:100%; max-width:480px; height:120px; padding:16px; border-radius:14px;
+                  border:2px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.15); color:white;
+                  font-size:1rem; resize:none; outline:none; backdrop-filter:blur(8px);"></textarea>
+              <button onclick="submitQuestion()" style="padding:16px 40px; border-radius:14px; border:none;
+                background:#8B5CF6; color:white; font-size:1.1rem; font-weight:700; cursor:pointer; width:100%; max-width:480px;">
+                ❓ 질문 제출
+              </button>
             </div>
-            <div id="qa-display"></div>
           `;
           break;
-        case '리뷰':
+        }
+        case '리뷰': {
+          const subject = S.activeModuleData.subject || '오늘 교육';
+          const guide = S.activeModuleData.guide || '솔직한 피드백을 남겨주세요';
           content.innerHTML = `
-            <div style="text-align: center;">
-              <div style="margin-bottom: 20px; font-size: 1.2rem;">평가해주세요</div>
-              <div style="font-size: 3rem; margin-bottom: 20px;" id="star-display">☆☆☆☆☆</div>
-              <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;">
-                ${[1,2,3,4,5].map(s => `<button class="btn-primary" onclick="setRating(${s})" style="flex: 1;">${s}⭐</button>`).join('')}
+            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; padding:20px;">
+              <p style="color:rgba(255,255,255,0.9); font-size:1.2rem; font-weight:700;">${escapeHtml(subject)}</p>
+              <p style="color:rgba(255,255,255,0.65); font-size:0.9rem;">${escapeHtml(guide)}</p>
+              <div style="display:flex; gap:12px; margin:8px 0;">
+                ${[1,2,3,4,5].map(s => `
+                  <button onclick="setRating(${s})" id="star-btn-${s}"
+                    style="width:52px; height:52px; border-radius:12px; border:2px solid rgba(255,255,255,0.3);
+                      background:rgba(255,255,255,0.1); color:white; font-size:1.5rem; cursor:pointer;">
+                    ${s <= 3 ? ['😢','😕','😐','😊','🤩'][s-1] : ['😢','😕','😐','😊','🤩'][s-1]}
+                  </button>
+                `).join('')}
               </div>
-              <textarea placeholder="피드백을 입력해주세요" id="review-input" style="width: 100%; max-width: 400px; margin-bottom: 12px;"></textarea>
-              <button class="btn-primary" onclick="submitReview()" style="width: 100%; max-width: 400px;">제출</button>
+              <div id="star-display" style="color:#F59E0B; font-size:2rem; letter-spacing:4px;">☆☆☆☆☆</div>
+              <textarea id="review-input" placeholder="소감을 남겨주세요..."
+                style="width:100%; max-width:480px; height:100px; padding:16px; border-radius:14px;
+                  border:2px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.15); color:white;
+                  font-size:1rem; resize:none; outline:none; backdrop-filter:blur(8px);"></textarea>
+              <button onclick="submitReview()" style="padding:16px 40px; border-radius:14px; border:none;
+                background:#10B981; color:white; font-size:1.1rem; font-weight:700; cursor:pointer; width:100%; max-width:480px;">
+                ⭐ 리뷰 제출
+              </button>
             </div>
           `;
           break;
+        }
+        case '그라운드룰': {
+          const rules = (S.activeModuleData && S.activeModuleData.rules) || [];
+          content.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; gap:12px; padding:20px;">
+              <div style="font-size:2.5rem; margin-bottom:8px;">📋</div>
+              ${rules.length > 0 ? rules.map((r, i) => `
+                <div style="width:100%; max-width:480px; padding:14px 20px; border-radius:12px;
+                  background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);
+                  color:white; font-size:1rem; font-weight:500; display:flex; gap:12px; align-items:center;">
+                  <span style="background:#3B82F6; color:white; border-radius:50%; width:28px; height:28px;
+                    display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;">${i+1}</span>
+                  ${escapeHtml(r)}
+                </div>
+              `).join('') : '<p style="color:rgba(255,255,255,0.6);">강사의 안내를 따라주세요</p>'}
+            </div>
+          `;
+          break;
+        }
         default:
-          content.innerHTML = `<p style="text-align: center; color: white; font-size: 1.2rem;">강사의 안내를 따라주세요</p>`;
+          content.innerHTML = `<div style="text-align:center; padding:40px;">
+            <div style="font-size:4rem; margin-bottom:20px;">${getModuleEmoji(S.activeModule)}</div>
+            <p style="color:rgba(255,255,255,0.9); font-size:1.4rem; font-weight:600;">강사의 안내를 따라주세요</p>
+          </div>`;
       }
     }
 
@@ -2400,12 +2507,12 @@
           <div class="balance-game-container">
             <div class="balance-game-question">${escapeHtml(q)}</div>
             <div class="balance-game-options">
-              <div class="balance-option" onclick="voteBalance('A')">
-                <div class="balance-emoji">A</div>
+              <div class="balance-option balance-option-a" onclick="voteBalance('A')">
+                <div class="balance-emoji">👈 A</div>
                 <div class="balance-text">${escapeHtml(a)}</div>
               </div>
-              <div class="balance-option" onclick="voteBalance('B')">
-                <div class="balance-emoji">B</div>
+              <div class="balance-option balance-option-b" onclick="voteBalance('B')">
+                <div class="balance-emoji">B 👉</div>
                 <div class="balance-text">${escapeHtml(b)}</div>
               </div>
             </div>
