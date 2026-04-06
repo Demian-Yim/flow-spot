@@ -1,0 +1,84 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-surface-primary text-slate-900 font-sans;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    @apply bg-primary-500/20 text-primary-900;
+  }
+}
+
+@layer components {
+  .input-base {
+    @apply w-full bg-white border border-slate-300 rounded-input px-4 py-3 text-base
+      placeholder:text-slate-400
+      focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20
+      disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed
+      transition-colors duration-150;
+  }
+
+  .input-error {
+    @apply border-red-400 focus:border-red-500 focus:ring-red-500/20;
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20;
+  }
+
+  .glass-dark {
+    @apply bg-slate-900/80 backdrop-blur-xl border border-white/10;
+  }
+
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/50 focus-visible:ring-offset-2;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+/* Number font */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Print styles for PDF export */
+@media print {
+  header, .no-print { display: none !important; }
+  body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .print-break { page-break-inside: avoid; }
+  @page { margin: 1.5cm; size: A4; }
+}
