@@ -140,8 +140,8 @@ const SpotLayoutV2: React.FC<SpotLayoutV2Props> = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <p className="text-6xl font-black text-slate-900">{completionTitle}</p>
-            <p className="text-lg text-slate-500 mt-3">{completionMessage}</p>
+            <p className="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 break-keep">{completionTitle}</p>
+            <p className="text-base sm:text-lg text-slate-500 mt-3 break-keep">{completionMessage}</p>
           </motion.div>
         ) : (
           <motion.div
