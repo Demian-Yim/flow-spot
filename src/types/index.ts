@@ -39,6 +39,15 @@ export type SpotType =
   | 'mini-games'
   | 'self-intro'
   | 'cafe-order'
+  // Phase A
+  | 'greeting-circle'
+  | 'mirror-stretch'
+  // Phase B
+  | 'intro-relay'
+  | 'role-roulette'
+  | 'body-games'
+  | 'rule-ritual'
+  | 'cafe-break'
 
 export const SPOT_LABELS: Record<SpotType, { name: string; emoji: string; description: string }> = {
   'manner':       { name: '매너 모드',   emoji: '🤝', description: '좋은 매너를 배워봅시다' },
@@ -48,6 +57,15 @@ export const SPOT_LABELS: Record<SpotType, { name: string; emoji: string; descri
   'mini-games':   { name: '미니 게임',   emoji: '🎮', description: '팀과 함께 게임을 즐겨요' },
   'self-intro':   { name: '자기소개',    emoji: '👋', description: '서로를 알아가는 시간' },
   'cafe-order':   { name: '카페 주문',   emoji: '☕', description: '음료/간식을 주문해요' },
+  // Phase A
+  'greeting-circle': { name: '인사 서클', emoji: '😊', description: '짝-그룹-전체 인사 릴레이' },
+  'mirror-stretch':  { name: '미러 스트레칭', emoji: '🧘', description: '따라하는 스트레칭' },
+  // Phase B
+  'intro-relay':   { name: '소개 릴레이', emoji: '🎤', description: '30초 릴레이 자기소개' },
+  'role-roulette': { name: '역할 룰렛',   emoji: '🎰', description: '역할을 돌려서 뽑아요' },
+  'body-games':    { name: '몸 게임',     emoji: '💪', description: '박수·OX·가위바위보' },
+  'rule-ritual':   { name: '약속 의식',   emoji: '🤝', description: '규칙을 몸으로 약속해요' },
+  'cafe-break':    { name: '카페 타임',   emoji: '☕', description: '메뉴 고르고 잠시 쉬어요' },
 }
 
 export interface SpotActivity {

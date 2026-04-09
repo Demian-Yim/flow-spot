@@ -12,6 +12,13 @@ import GroundRules from '@/components/spots/GroundRules'
 import MiniGames from '@/components/spots/MiniGames'
 import SelfIntroduction from '@/components/spots/SelfIntroduction'
 import CafeOrder from '@/components/spots/CafeOrder'
+import GreetingCircle from '@/components/spots/GreetingCircle'
+import MirrorStretch from '@/components/spots/MirrorStretch'
+import IntroRelay from '@/components/spots/IntroRelay'
+import RoleRoulette from '@/components/spots/RoleRoulette'
+import BodyGames from '@/components/spots/BodyGames'
+import RuleRitual from '@/components/spots/RuleRitual'
+import CafeBreak from '@/components/spots/CafeBreak'
 import { useSessionSync } from '@/hooks/useSessionSync'
 import { useFirestore } from '@/hooks/useFirestore'
 import { SessionMode, SpotType, SPOT_LABELS, Project, SessionLiveState, Participant, TeamId } from '@/types'
@@ -717,6 +724,22 @@ function SpotRenderer({
       return <SelfIntroduction duration={120} onComplete={onComplete} isPresenter={isPresenter} />
     case 'cafe-order':
       return <CafeOrder duration={180} onComplete={onComplete} isPresenter={isPresenter} />
+    // Phase A
+    case 'greeting-circle':
+      return <GreetingCircle duration={60} onComplete={onComplete} isPresenter={isPresenter} />
+    case 'mirror-stretch':
+      return <MirrorStretch duration={30} onComplete={onComplete} isPresenter={isPresenter} />
+    // Phase B
+    case 'intro-relay':
+      return <IntroRelay duration={30} participants={participants.map((p) => p.name)} onComplete={onComplete} isPresenter={isPresenter} />
+    case 'role-roulette':
+      return <RoleRoulette participants={participants.map((p) => p.name)} onComplete={onComplete} isPresenter={isPresenter} />
+    case 'body-games':
+      return <BodyGames duration={120} onComplete={onComplete} isPresenter={isPresenter} />
+    case 'rule-ritual':
+      return <RuleRitual duration={10} onComplete={onComplete} isPresenter={isPresenter} />
+    case 'cafe-break':
+      return <CafeBreak duration={60} participants={participants.map((p) => p.name)} onComplete={onComplete} isPresenter={isPresenter} />
     default:
       return (
         <div className="min-h-screen flex items-center justify-center p-4">
