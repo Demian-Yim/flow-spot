@@ -19,6 +19,7 @@ import RoleRoulette from '@/components/spots/RoleRoulette'
 import BodyGames from '@/components/spots/BodyGames'
 import RuleRitual from '@/components/spots/RuleRitual'
 import CafeBreak from '@/components/spots/CafeBreak'
+import ActivityFlowController from '@/components/spots/ActivityFlowController'
 import { useSessionSync } from '@/hooks/useSessionSync'
 import { useFirestore } from '@/hooks/useFirestore'
 import { SessionMode, SpotType, SPOT_LABELS, Project, SessionLiveState, Participant, TeamId } from '@/types'
@@ -116,6 +117,7 @@ export default function SessionPage() {
           currentSpotIndex={currentSpotIndex}
           participants={participants}
           connected={connected}
+          onNextSpot={nextSpot}
         />
       )
 
@@ -255,6 +257,7 @@ function ProjectorView({
   currentSpotIndex,
   participants,
   connected,
+  onNextSpot,
 }: {
   project: Project
   liveState: SessionLiveState | null
@@ -262,9 +265,21 @@ function ProjectorView({
   currentSpotIndex: number
   participants: Participant[]
   connected: boolean
+  onNextSpot: () => void
 }) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
+  // Phase C: auto-chain between activities. When the current spot fires its
+  // onComplete, ActivityFlowController shows a 10s pre-roll countdown and
+  // then calls nextSpot() to advance. Reset whenever the index changes.
+  const [spotComplete, setSpotComplete] = useState(false)
+  useEffect(() => {
+    setSpotComplete(false)
+  }, [currentSpotIndex])
+  const hasNext = currentSpotIndex < project.spotSequence.length - 1
+  const nextLabel = hasNext
+    ? SPOT_LABELS[project.spotSequence[currentSpotIndex + 1]]?.name
+    : undefined
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -314,12 +329,21 @@ function ProjectorView({
           exit={{ opacity: 0 }}
           className="w-full h-full"
         >
-          <SpotRenderer
-            spotType={currentSpot}
-            participants={participants}
-            isPresenter={true}
-            onComplete={() => {}}
-          />
+          <ActivityFlowController
+            isComplete={spotComplete && hasNext}
+            onAutoAdvance={() => {
+              if (hasNext) onNextSpot()
+            }}
+            preRollSeconds={10}
+            nextActivityLabel={nextLabel}
+          >
+            <SpotRenderer
+              spotType={currentSpot}
+              participants={participants}
+              isPresenter={true}
+              onComplete={() => setSpotComplete(true)}
+            />
+          </ActivityFlowController>
         </motion.div>
       </AnimatePresence>
 

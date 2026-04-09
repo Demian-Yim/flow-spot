@@ -41,7 +41,20 @@ interface Session {
   createdAt: string
 }
 
-const ALL_SPOT_TYPES: SpotType[] = ['manner', 'stretch', 'greeting', 'ground-rules', 'mini-games', 'self-intro', 'cafe-order']
+// Phase C: Only the 7 NEW (cinematic V2) spots are selectable. The legacy
+// text-heavy spot types ('manner', 'stretch', 'greeting', 'ground-rules',
+// 'mini-games', 'self-intro', 'cafe-order') are intentionally retired from
+// the host selection UI. Their components and SpotRenderer switch cases
+// remain intact so any pre-existing sessions/projects keep rendering.
+const ALL_SPOT_TYPES: SpotType[] = [
+  'greeting-circle',
+  'mirror-stretch',
+  'intro-relay',
+  'role-roulette',
+  'body-games',
+  'rule-ritual',
+  'cafe-break',
+]
 
 const statusMap: Record<string, { label: string; variant: 'neutral' | 'info' | 'success' | 'warning' }> = {
   waiting: { label: '대기 중', variant: 'neutral' },
